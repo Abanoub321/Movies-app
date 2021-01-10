@@ -1,32 +1,13 @@
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
 
-import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+import DrawerNavigator from "./src/Navigation/DrawerNavigator";
 
-
-
-const App = () => {
+ const App = () => {
   return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          >
-            
-          
-        </ScrollView>
-      </SafeAreaView>
-    </>
+    <NavigationContainer>
+      <DrawerNavigator />
+    </NavigationContainer>
   );
-};
-
-
-
+}
 export default App;
