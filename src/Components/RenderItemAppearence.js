@@ -1,27 +1,78 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { pure } from 'recompose';
+import { baseUrl } from '../../Env';
 //import {api_key} from 'react-native-dotenv';
 
 
 
-const RenderItemAppearence = ({ item }) => {
+const RenderItemAppearence = ({ item, navigation }) => {
 
-  const onPress = () =>{
-    console.log(item.itemName, item.itemId);
+  const onPress = () => {
+    if (item.itemType == "movie") {
+      navigation.navigate('Movie', {
+        id: item.itemId
+      });
+    } else if (item.itemType == "tv") {
+      navigation.navigate('Series', {
+        id: item.itemId
+      })
+    }
+    else if (item.itemType == "season") {
+   
+      navigation.navigate('Season', {
+        id: item.itemId,
+        seasonNo: item.itemSeason
+      })
+    }
+    else if (item.itemType == 'episode') {
+   
+      navigation.navigate('Episode', {
+        id: item.itemId,
+        seasonNo: item.itemSeason,
+        episodeNo: item.itemEpisode
+      })
+    }
+    else if (item.itemType == "person") {
+   
+      navigation.navigate('Person', {
+        id: item.itemId,
+        poster:item.itemPoster
+      })
+    }
+    //console.log(item.itemName, item.itemId);
+  }
+
+  const renderImage = () => {
+    if (!item.itemPoster) {
+      return (
+        <Image style={styles.image}
+          source={{ uri: 'https://www.pngkey.com/png/full/21-213224_unknown-person-icon-png-download.png' }}
+        />
+      );
+    } else {
+      return (
+        <Image
+          style={styles.image}
+          source={{ uri: baseUrl + item.itemPoster }}
+        />
+      );
+    }
   }
   return (
 
 
     <TouchableOpacity onPress={onPress}>
-      <Image 
-        style = {styles.image}
-        source ={{uri : 'https://image.tmdb.org/t/p/w500' + item.itemPoster}}
-      />
-      <Text style={styles.center}>
-        {item.itemName}
-      </Text>
+      <View>
+        {
+          renderImage()
+        }
 
+        <Text style={styles.center}>
+          {item.itemName}
+        </Text>
+
+      </View>
     </TouchableOpacity>
 
   );
@@ -35,13 +86,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     textAlign: "center",
   },
-  image:{
+  image: {
     width: 250,
     height: 250,
     resizeMode: 'contain',
-    borderRadius:15,
-    marginBottom:10,
+    borderRadius: 15,
+    marginBottom: 10,
   }
 });
 
-export default pure(RenderItemAppearence) ;
+export default pure(RenderItemAppearence);
