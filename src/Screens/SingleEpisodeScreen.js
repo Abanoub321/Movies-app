@@ -7,12 +7,13 @@ import {
     ScrollView,
     FlatList,
     Dimensions,
-    ActivityIndicator
+    ActivityIndicator,
+    RefreshControl
 } from 'react-native';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import { LinkerComponent } from '../Components/LinkerComponent';
 import { apiKey, baseUrl } from '../../Env';
-import { posterImage, Title, detailsHeader,centerdAboveDetail } from '../styles';
+import { posterImage, Title, detailsHeader, centerdAboveDetail } from '../styles';
 
 const EpisodeScreen = ({ route }) => {
     const { id, seasonNo, episodeNo, poster } = route.params;
@@ -25,6 +26,9 @@ const EpisodeScreen = ({ route }) => {
             fetchEpisodeData();
         setFetched(true);
     });
+    const onRefresh = ()=>{
+        setFetched(false);
+    }
     const fetchEpisodeData = async () => {
         let url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}/episode/${episodeNo}?api_key=${apiKey}`;
         let response = await fetch(url);
@@ -41,7 +45,11 @@ const EpisodeScreen = ({ route }) => {
     }
     else {
         return (
-            <ScrollView>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl refreshing={!fetched} onRefresh={onRefresh} />
+                }
+            >
                 <View>
                     <Image source={{ uri: baseUrl + (episode.still_path == null ? poster : episode.still_path) }} style={posterImage} />
                     <Text style={Title}>{episode.name}</Text>
@@ -49,14 +57,14 @@ const EpisodeScreen = ({ route }) => {
                         <Text style={detailsHeader}>Release Date</Text>
                         <Text>{episode.air_date}</Text>
                     </View>
-                    <View style={{margin:15}}>
+                    <View style={{ margin: 15 }}>
                         <Text style={detailsHeader}>Crew : </Text>
                         <FlatList
                             showsHorizontalScrollIndicator={false}
                             initialNumToRender={3}
                             horizontal={true}
                             data={episode.crew}
-                            renderItem={({item}) =>
+                            renderItem={({ item }) =>
                                 <RenderItemAppearence
                                     item={{
                                         itemId: item.id,
@@ -69,14 +77,14 @@ const EpisodeScreen = ({ route }) => {
                             keyExtractor={item => item.id.toString()}
                         />
                     </View>
-                    <View style={{margin:15}}> 
+                    <View style={{ margin: 15 }}>
                         <Text style={detailsHeader}>Guest Stars : </Text>
                         <FlatList
                             showsHorizontalScrollIndicator={false}
                             initialNumToRender={3}
                             horizontal={true}
                             data={episode.crew}
-                            renderItem={({item}) =>
+                            renderItem={({ item }) =>
                                 <RenderItemAppearence
                                     item={{
                                         itemId: item.id,

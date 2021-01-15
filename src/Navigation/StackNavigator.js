@@ -20,16 +20,16 @@ const screenOptionStyle = {
 const TrendingStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="Trending Today" component={TrendingScreenComponent}  />
-      <Stack.Screen name="Movie" component={MovieScreen} />
-      <Stack.Screen name= "Series" component={TvScreen} />
-      <Stack.Screen name="Season" component={SeasonScreen}/>
-      <Stack.Screen name= "Episode" component={EpisodeScreen}  />
-      <Stack.Screen name= "Person" component={PersonScreen}  />
+      <Stack.Screen name="Trending Today" component={TrendingScreenComponent} />
+      <Stack.Screen name="Movie" component={MovieScreen} options={({ route }) => ({ title: route.params.name })} />
+      <Stack.Screen name="Series" component={TvScreen} options={({ route }) => ({ title: route.params.name })} />
+      <Stack.Screen name="Season" component={SeasonScreen} options={({ route }) => ({ title: route.params.name })} />
+      <Stack.Screen name="Episode" component={EpisodeScreen} options={({ route }) => ({ title: route.params.name })} />
+      <Stack.Screen name="Person" component={PersonScreen} options={({ route }) => ({ title: route.params.name })} />
     </Stack.Navigator>
   );
 }
 
 
 
-export { TrendingStackNavigator};
+export { TrendingStackNavigator };

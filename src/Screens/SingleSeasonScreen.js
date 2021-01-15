@@ -7,30 +7,34 @@ import {
     ScrollView,
     FlatList,
     Dimensions,
-    ActivityIndicator
+    ActivityIndicator,
+    RefreshControl
 } from 'react-native';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
-import { LinkerComponent } from '../Components/LinkerComponent';
 import { apiKey, baseUrl } from '../../Env';
+import { Title,titleHeader ,overView,rowDetail,detailsHeader} from '../styles';
 
 const SeasonScreen = ({ route, navigation }) => {
     const { id, seasonNo } = route.params;
     const [season, setSeason] = useState({});
     const [fetched, setFetched] = useState(false);
 
-    useEffect( () => {
-        setFetched(false);
+    useEffect(() => {
+
         if (!fetched)
             fetchSeasonData();
-        setFetched(true);
-    })
+
+    }, [fetched])
     const fetchSeasonData = async () => {
         let url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}?api_key=${apiKey}`;
         let response = await fetch(url);
         let seasonData = await response.json();
         setSeason(seasonData);
+        setFetched(true);
     }
-
+    const onRefresh = ()=>{
+        setFetched(false);
+    }
     if (!fetched) {
         return (
             <View>
@@ -40,22 +44,26 @@ const SeasonScreen = ({ route, navigation }) => {
     }
     else {
         return (
-            <ScrollView>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl refreshing={!fetched} onRefresh={onRefresh} />
+                }
+            >
                 <View>
                     <Image source={{ uri: baseUrl + season.poster_path }} style={styles.posterImage} />
                 </View>
-                    <Text style={styles.movieTitle}>{season.name}</Text>
-                <View style={styles.rowDetail}>
-                    
-                        <Text style={styles.detailsHeader}>Release Date: </Text>
-                        <Text>{season.air_date}</Text>
-                    
+                <Text style={Title}>{season.name}</Text>
+                <View style={rowDetail}>
+
+                    <Text style={detailsHeader}>Release Date: </Text>
+                    <Text>{season.air_date}</Text>
+
                 </View>
                 <View>
-                    <Text style={styles.movieOverview}>{season.overview}</Text>
+                    <Text style={overView}>{season.overview}</Text>
                 </View>
                 <View style={{ margin: 15 }}>
-                    <Text style={styles.titleHeader} >Episodes</Text>
+                    <Text style={titleHeader} >Episodes</Text>
                     <FlatList
 
                         initialNumToRender={3}
@@ -83,13 +91,7 @@ const SeasonScreen = ({ route, navigation }) => {
 }
 const styles = StyleSheet.create({
 
-    movieTitle: {
-        alignSelf: 'center',
-        fontSize: 30,
-        fontWeight: 'bold',
-        flexDirection: 'column',
-        marginBottom: 15
-    },
+    
     posterImage: {
         width: 250,
         height: Math.round(Dimensions.get('screen').height) / 2.2,
@@ -97,35 +99,12 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
         alignSelf: 'center',
         borderRadius: 15,
-        marginBottom:10,
+        marginBottom: 10,
     },
-    movieOverview: {
-        alignSelf: 'center',
-        flexWrap: 'wrap',
-        textAlign: 'center',
-        margin: 10,
-        marginTop: 15,
-        fontSize: 15,
-        margin: 3,
-    },
-    rowDetail: {
-        alignItems:'center',
-        justifyContent: 'space-around',
-        margin: 3,
-    },
-    detailsHeader: {
-        color: 'blue',
-        fontWeight: 'bold',
-        marginRight: 3
-    },
-    titleHeader:{
-        fontSize:20,
-        alignItems:'flex-start',
-        color:'green',
-        marginBottom:15,
-        fontWeight:'bold',
-
-    },
+    
+    
+   
+    
 })
 
 export default SeasonScreen;

@@ -1,10 +1,11 @@
 import {Dimensions} from 'react-native';
 export const Title = {
-    alignSelf: 'center',
-    fontSize: 30,
-    fontWeight: 'bold',
-    flexDirection: 'column',
-    marginBottom: 15
+    flex: 1,
+    alignSelf:'center',
+    fontWeight: "bold",
+    fontSize: 20,
+    margin: 15,
+    marginRight: 20
 }
 export const posterImage = {
     width: 250,
@@ -38,4 +39,17 @@ export const detailsHeader = {
 export const centerdAboveDetail = {
     flexDirection: 'column',
     alignItems: 'center'
+}
+export const backgroundImage= {
+
+    width: Math.round(Dimensions.get('screen').width),
+    height: Math.round(Dimensions.get('screen').height) / 3,
+    borderBottomRightRadius: 25,
+    borderBottomLeftRadius: 25,
+    resizeMode: 'stretch',
+}
+export const   genreContainer= {
+    flexDirection: 'row',
+    marginLeft: 10,
+    flexWrap: 'wrap'
 }

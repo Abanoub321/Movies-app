@@ -11,33 +11,38 @@ const RenderItemAppearence = ({ item, navigation }) => {
   const onPress = () => {
     if (item.itemType == "movie") {
       navigation.navigate('Movie', {
-        id: item.itemId
+        id: item.itemId,
+        name: item.itemName
       });
     } else if (item.itemType == "tv") {
       navigation.navigate('Series', {
-        id: item.itemId
+        id: item.itemId,
+        name: item.itemName
       })
     }
     else if (item.itemType == "season") {
-   
+
       navigation.navigate('Season', {
         id: item.itemId,
-        seasonNo: item.itemSeason
+        seasonNo: item.itemSeason,
+        name: item.itemName
       })
     }
     else if (item.itemType == 'episode') {
-   
+
       navigation.navigate('Episode', {
         id: item.itemId,
         seasonNo: item.itemSeason,
-        episodeNo: item.itemEpisode
+        episodeNo: item.itemEpisode,
+        name: item.itemName
       })
     }
     else if (item.itemType == "person") {
-   
+
       navigation.navigate('Person', {
         id: item.itemId,
-        poster:item.itemPoster
+        poster: item.itemPoster,
+        name: item.itemName
       })
     }
     //console.log(item.itemName, item.itemId);

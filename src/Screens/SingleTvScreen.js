@@ -6,13 +6,13 @@ import {
     StyleSheet,
     ScrollView,
     FlatList,
-    Dimensions,
-    ActivityIndicator
+    ActivityIndicator,
+    RefreshControl
 } from 'react-native';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import { LinkerComponent } from '../Components/LinkerComponent';
 import { apiKey, baseUrl } from '../../Env';
-
+import {backgroundImage,Title,titleHeader,overView,rowDetail,detailsHeader,centerdAboveDetail,genreContainer} from '../styles';
 
 
 const TvScreen = ({ route, navigation }) => {
@@ -21,26 +21,29 @@ const TvScreen = ({ route, navigation }) => {
     const [fetched, setFetched] = useState(false);
 
     useEffect(() => {
-        setFetched(false);
         if (!fetched)
             fetchTvData();
-        setFetched(true);
-    })
+
+    }, [fetched])
 
     const fetchTvData = async () => {
         let url = `https://api.themoviedb.org/3/tv/${id}?api_key=${apiKey}&language=en-US`;
         let response = await fetch(url);
         let tv = await response.json();
         setTv(tv);
+        setFetched(true);
     }
 
     const handleGenres = ({ item }) => {
         return (
-            <View style={styles.genreContainer}>
+            <View style={genreContainer}>
                 <Text>{item.name}</Text>
                 <Text>,</Text>
             </View>
         )
+    }
+    const onRefresh = ()=>{
+        setFetched(false);
     }
     if (!fetched) {
         return (
@@ -52,21 +55,25 @@ const TvScreen = ({ route, navigation }) => {
 
 
         return (
-            <ScrollView>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl refreshing={!fetched} onRefresh={onRefresh} />
+                }
+            >
                 <View style={{ flex: 1 }}>
-                    <Image source={{ uri: baseUrl + tv.backdrop_path }} style={styles.backgroundImage} />
+                    <Image source={{ uri: baseUrl + tv.backdrop_path }} style={backgroundImage} />
 
                     <View>
-                        <Text style={styles.movieTitle}> {tv.name} </Text>
-                        <Text style={styles.movieOverview}>
+                        <Text style={Title}> {tv.name} </Text>
+                        <Text style={overView}>
                             {tv.overview}
                         </Text>
                     </View>
 
-                    <View style={styles.rowDetail}>
+                    <View style={rowDetail}>
 
-                        <View style={styles.aboveAndCenterd}>
-                            <Text style={styles.detailsHeader}>
+                        <View style={centerdAboveDetail}>
+                            <Text style={detailsHeader}>
 
                                 First realease date
                             </Text>
@@ -77,22 +84,22 @@ const TvScreen = ({ route, navigation }) => {
                         </View>
 
 
-                        <View style={styles.aboveAndCenterd}>
+                        <View style={centerdAboveDetail}>
 
-                            <Text style={styles.detailsHeader}>
+                            <Text style={detailsHeader}>
                                 Last Episode released date
                               </Text>
                             <Text>
-                                {tv.last_air_date == null? 'Not Known yet':tv.last_air_date}
+                                {tv.last_air_date == null ? 'Not Known yet' : tv.last_air_date}
                             </Text>
                         </View>
 
                     </View>
 
-                    <View style={styles.rowDetail}>
-                        <View style={styles.aboveAndCenterd}>
+                    <View style={rowDetail}>
+                        <View style={centerdAboveDetail}>
 
-                            <Text style={styles.detailsHeader}>
+                            <Text style={detailsHeader}>
                                 Popularity
                           </Text>
                             <Text>
@@ -101,19 +108,19 @@ const TvScreen = ({ route, navigation }) => {
                         </View>
 
                     </View>
-                    <View style={styles.rowDetail}>
-                        <View style={styles.aboveAndCenterd}>
+                    <View style={rowDetail}>
+                        <View style={centerdAboveDetail}>
 
-                            <Text style={styles.detailsHeader}>
+                            <Text style={detailsHeader}>
                                 Number of Seasons
                             </Text>
                             <Text>
                                 {tv.number_of_seasons}
                             </Text>
                         </View>
-                        <View style={styles.aboveAndCenterd}>
+                        <View style={centerdAboveDetail}>
 
-                            <Text style={styles.detailsHeader}>
+                            <Text style={detailsHeader}>
                                 Number of Episodes
                           </Text>
                             <Text>
@@ -121,16 +128,16 @@ const TvScreen = ({ route, navigation }) => {
                             </Text>
                         </View>
                     </View>
-                    <View style={styles.rowDetail}>
-                        <View style={styles.rowDetail}>
-                            <Text style={styles.detailsHeader}>Status : </Text>
+                    <View style={rowDetail}>
+                        <View style={rowDetail}>
+                            <Text style={detailsHeader}>Status : </Text>
                             <Text style={{ fontSize: 15, color: 'red' }}>
                                 {tv.status}
                             </Text>
                         </View>
                     </View>
-                    <View style={styles.genreContainer}>
-                        <Text style={styles.detailsHeader}>
+                    <View style={genreContainer}>
+                        <Text style={detailsHeader}>
                             Genres:
                         </Text>
                         <Text></Text>
@@ -144,11 +151,11 @@ const TvScreen = ({ route, navigation }) => {
                             keyExtractor={item => item.id.toString()}
                         />
                     </View>
-                    <View style={styles.rowDetail}>
+                    <View style={rowDetail}>
                         <LinkerComponent url={tv.homepage} baseUrl='' color='grey' text='See on Website' />
                     </View>
                     <View style={{ margin: 15 }}>
-                        <Text style={styles.titleHeader}>Seasons</Text>
+                        <Text style={titleHeader}>Seasons</Text>
                         <FlatList
                             showsHorizontalScrollIndicator={false}
                             initialNumToRender={3}
@@ -170,7 +177,7 @@ const TvScreen = ({ route, navigation }) => {
                             keyExtractor={item => item.id.toString()}
                         />
                         <View style={{ margin: 15 }}>
-                        <Text style={styles.titleHeader}>Production Companies</Text>
+                            <Text style={titleHeader}>Production Companies</Text>
                             <FlatList
                                 showsHorizontalScrollIndicator={false}
                                 initialNumToRender={3}
@@ -196,67 +203,4 @@ const TvScreen = ({ route, navigation }) => {
     }
 }
 
-const styles = StyleSheet.create({
-
-    backgroundImage: {
-
-        width: Math.round(Dimensions.get('screen').width),
-        height: Math.round(Dimensions.get('screen').height) / 3,
-        borderBottomRightRadius: 25,
-        borderBottomLeftRadius: 25,
-        resizeMode: 'stretch',
-    },
-    movieTitle: {
-        alignSelf: 'center',
-        fontSize: 30,
-        fontWeight: 'bold',
-       
-        marginTop: 10,
-        marginBottom: 15
-    },
-    posterImage: {
-        width: 250,
-        height: 250,
-        aspectRatio: 1,
-        resizeMode: 'contain',
-        alignSelf: 'center',
-        borderRadius: 15,
-    },
-    movieOverview: {
-        alignSelf: 'center',
-        flexWrap: 'wrap',
-        textAlign: 'center',
-        margin: 10,
-        fontSize: 15,
-        margin: 3,
-    },
-    rowDetail: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        margin: 3,
-    },
-    detailsHeader: {
-        color: 'blue',
-        fontWeight: 'bold',
-        marginRight: 3,
-
-    },
-    genreContainer: {
-        flexDirection: 'row',
-        marginLeft: 10,
-        flexWrap: 'wrap'
-    },
-    aboveAndCenterd: {
-        flexDirection: 'column',
-        alignItems: 'center'
-    },
-    titleHeader:{
-        fontSize:20,
-        alignItems:'flex-start',
-        color:'green',
-        marginBottom:15,
-        fontWeight:'bold',
-
-    }
-})
 export default TvScreen;

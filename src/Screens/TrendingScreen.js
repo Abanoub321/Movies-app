@@ -1,9 +1,9 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { View, Text, StyleSheet, FlatList, ScrollView, RefreshControl, ActivityIndicator } from "react-native";
+import { View, Text, FlatList, ScrollView, RefreshControl, ActivityIndicator } from "react-native";
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import { apiKey } from '../../Env';
-//import {api_key} from 'react-native-dotenv';
+import { Title } from '../styles'
 
 
 
@@ -16,8 +16,8 @@ const TrendingScreenComponent = ({ navigation }) => {
   useEffect(() => {
     if (!fetched)
       fetchTrendingData();
-   
-  },[fetched])
+
+  }, [fetched])
   const fetchTrendingData = async () => {
     let url = `https://api.themoviedb.org/3/trending/movie/day?api_key=${apiKey}`;
     await fetch(url)
@@ -47,12 +47,12 @@ const TrendingScreenComponent = ({ navigation }) => {
       .catch(err => {
         console.log(err);
       });
-      setFetched(true);
+    setFetched(true);
   };
+
   const onRefresh = () => {
     setFetched(false);
   }
-
   if (!fetched) {
     return (
       <View>
@@ -69,8 +69,8 @@ const TrendingScreenComponent = ({ navigation }) => {
             <RefreshControl refreshing={!fetched} onRefresh={onRefresh} />
           }
         >
-          <View style={styles.center}>
-            <Text style={styles.title}>Trending Movies</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={Title}>Trending Movies</Text>
             <FlatList
               showsHorizontalScrollIndicator={false}
               initialNumToRender={3}
@@ -90,8 +90,8 @@ const TrendingScreenComponent = ({ navigation }) => {
               keyExtractor={item => item.id.toString()}
             />
           </View>
-          <View style={styles.center}>
-            <Text style={styles.title}>Trending TV-Shows</Text>
+          <View >
+            <Text style={Title}>Trending TV-Shows</Text>
             <FlatList
               showsHorizontalScrollIndicator={false}
               initialNumToRender={3}
@@ -111,8 +111,8 @@ const TrendingScreenComponent = ({ navigation }) => {
               keyExtractor={item => item.id.toString()}
             />
           </View>
-          <View style={styles.center}>
-            <Text style={styles.title}>Trending Persons</Text>
+          <View>
+            <Text style={Title}>Trending Persons</Text>
             <FlatList
               showsHorizontalScrollIndicator={false}
               initialNumToRender={3}
@@ -139,19 +139,6 @@ const TrendingScreenComponent = ({ navigation }) => {
 };
 
 
-const styles = StyleSheet.create({
-  center: {
-    flex: 1,
 
-  },
-  title: {
-    flex: 1,
-    justifyContent: "flex-start",
-    fontWeight: "bold",
-    fontSize: 20,
-    margin: 15,
-    marginRight: 20
-  }
-});
 
 export default TrendingScreenComponent;
