@@ -8,28 +8,65 @@ import {
     ScrollView,
     FlatList,
     RefreshControl,
-    ActivityIndicator
+    ActivityIndicator,
+    TouchableOpacity
 } from 'react-native';
-import { LinkerComponent } from '../Components/LinkerComponent';
+import { RenderExternalIDS } from '../Components/LinkerComponent';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
+import RenderImages from '../Components/RenderImages';
 import { apiKey, baseUrl } from '../../Env';
-import { Title, detailsHeader, overView, genreContainer, rowDetail } from '../styles';
-const MovieScreen = ({ route }) => {
+import { detailsHeader, overView, genreContainer, rowDetail, centerdAboveDetail, Title } from '../styles';
+const MovieScreen = ({ route, navigation }) => {
 
     const { id } = route.params;
     const [fetched, setFetched] = useState(false);
     const [movie, setMovie] = useState({});
+    const [credits, setCredits] = useState({});
+    const [externalIds, setExternalIds] = useState({});
+    const [images, setImages] = useState({});
+    const [imageBPressed, setImageBPressed] = useState(false);
+    const [imageTitle, setImageTitle] = useState('Show Images');
+    const [similarMovies,setSimilarMovies] = useState([]);
+    const [videos,setVideos] = useState([]);
     useEffect(() => {
         if (!fetched)
             fetchMovieData();
         setFetched(true);
-    })
+    }, [fetched])
 
     const fetchMovieData = async () => {
         let url = `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=en-US`;
         let response = await fetch(url);
         let movie = await response.json();
+        url = `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${apiKey}&language=en-US`;
+        response = await fetch(url);
+        let creditsData = await response.json();
+        url = `https://api.themoviedb.org/3/movie/${id}/external_ids?api_key=${apiKey}&language=en-US`;
+        response = await fetch(url);
+        let externalIdsData = await response.json();
+        url = `https://api.themoviedb.org/3/movie/${id}/images?api_key=${apiKey}`;
+        response = await fetch(url);
+        let imagesData = await response.json();
+        url = `https://api.themoviedb.org/3/movie/${id}/similar?api_key=${apiKey}&page=1`;
+        response = await fetch(url);
+        let similarMoviesData = await response.json();
+        url = `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${apiKey}`;
+        response = await fetch(url);
+        let videosData = await response.json();
         setMovie(movie);
+        setCredits(creditsData);
+        setExternalIds(externalIdsData);
+        setImages(imagesData.backdrops.concat(imagesData.posters));
+        setSimilarMovies(similarMoviesData.results);
+        setVideos(videosData.results);
+    }
+
+    const imageButton = () => {
+        setImageBPressed(!imageBPressed);
+        if (imageBPressed)
+            setImageTitle('More Images')
+        else
+            setImageTitle('Less Images')
     }
 
     const handleGenres = ({ item }) => {
@@ -40,15 +77,15 @@ const MovieScreen = ({ route }) => {
             </View>
         )
     }
-    const onRefresh = ()=>{
+    const onRefresh = () => {
         setFetched(false);
     }
     if (!fetched) {
         return (
             <View>
-              <ActivityIndicator size="large" color='#0000ff' />
+                <ActivityIndicator size="large" color='#0000ff' />
             </View>
-          )
+        )
     } else {
 
         return (
@@ -63,29 +100,27 @@ const MovieScreen = ({ route }) => {
                     <Image source={{ uri: baseUrl + movie.backdrop_path }} style={styles.backgroundImage} />
 
                     <View style={styles.hoveredContainer}>
-                        <Text style={Title}>
-                            {movie.title}
-                        </Text>
-                        <Image source={{ uri: baseUrl + movie.poster_path }} style={styles.posterImage} />
+
+                        <Image source={{ uri: baseUrl + movie.poster_path }} style={[styles.posterImage, { justifyContent: 'center', marginTop: 65 }]} />
                     </View>
                     <View>
-
-                        <Text style={styles.lengthText}>
-                            Length: {movie.runtime} minutes
-                   </Text>
+                        <View style={centerdAboveDetail}>
+                            <Text style={detailsHeader}> Length</Text>
+                            <Text style={styles.lengthText}>{movie.runtime} minutes </Text>
+                        </View>
 
                         <View style={rowDetail}>
-                            <View style={rowDetail}>
+                            <View style={centerdAboveDetail}>
                                 <Text style={detailsHeader}>
-                                    Rating:
+                                    Rating
                             </Text>
                                 <Text>
                                     {movie.vote_average}
                                 </Text>
                             </View>
-                            <View style={rowDetail}>
+                            <View style={centerdAboveDetail}>
                                 <Text style={detailsHeader}>
-                                    Year:
+                                    Year
                             </Text>
                                 <Text>
                                     {movie.release_date}
@@ -94,17 +129,17 @@ const MovieScreen = ({ route }) => {
                         </View>
 
                         <View style={rowDetail}>
-                            <View style={rowDetail}>
+                            <View style={centerdAboveDetail}>
                                 <Text style={detailsHeader}>
-                                    Popularity:
+                                    Popularity
                             </Text>
                                 <Text style={{ textAlign: 'left', margin: 5, marginLeft: 0 }}>
                                     {movie.popularity}
                                 </Text>
                             </View>
                         </View>
-                        <View style={{ alignSelf: 'center', margin: 5 }}>
-                            <Text style={{ fontSize: 15, color: 'red' }}>
+                        <View style={{ alignSelf: 'center' }}>
+                            <Text style={{ fontSize: 20, color: 'red' }}>
                                 {movie.status}
                             </Text>
                         </View>
@@ -115,8 +150,7 @@ const MovieScreen = ({ route }) => {
                             </Text>
                         </View>
                         <View style={rowDetail}>
-                            <LinkerComponent url={movie.imdb_id} baseUrl='https://imdb.com/title/' color='yellow' text='See on Imdb' />
-                            <LinkerComponent url={movie.homepage} baseUrl='' color='grey' text='Follow Website' />
+                            <RenderExternalIDS ids={{ ...externalIds, homepage: movie.homepage }} imdbUrl='https://www.imdb.com/title/' videos={videos} />
                         </View>
                         <View style={genreContainer}>
                             <Text style={detailsHeader}>
@@ -129,6 +163,96 @@ const MovieScreen = ({ route }) => {
                                 data={movie.genres}
                                 renderItem={(item) =>
                                     handleGenres(item)
+                                }
+                                keyExtractor={item => item.id.toString()}
+                            />
+                        </View>
+
+                        {
+                            imageBPressed ? <RenderImages images={images} /> : null
+                        }
+                        <TouchableOpacity onPress={imageButton}>
+                            <View style={rowDetail}>
+                                <Text style={[{ backgroundColor: 'purple', padding: 15, borderRadius: 15, color: 'black', fontWeight: 'bold' }]}>{imageTitle}</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <Text style={[{ fontSize: 20, margin: 10 }, detailsHeader]}>Cast :</Text>
+                        {
+                            !credits.cast ?
+                                (<View style={{ margin: 15 }}>
+                                    <Text>Sorry there is nothing to view</Text>
+                                </View>
+                                ) :
+                                (<FlatList
+                                    showsHorizontalScrollIndicator={false}
+                                    initialNumToRender={3}
+                                    horizontal={true}
+                                    data={credits.cast}
+                                    renderItem={(item) =>
+                                        <RenderItemAppearence
+                                            item={{
+                                                itemId: item.item.id,
+                                                itemName: item.item.name,
+                                                itemPoster: item.item.profile_path,
+                                                itemType: 'person'
+                                            }}
+                                            navigation={navigation}
+
+                                        />
+                                    }
+                                    keyExtractor={item => item.cast_id.toString()}
+
+                                />)
+                        }
+
+                        <View>
+                            <Text style={[{ fontSize: 20, margin: 10 }, detailsHeader]}>Crew :</Text>
+                            {
+                                !credits.crew ?
+                                    (<View style={{ margin: 15 }}>
+                                        <Text>Sorry there is nothing to view</Text>
+                                    </View>
+                                    ) :
+                                    (<FlatList
+                                        showsHorizontalScrollIndicator={false}
+                                        initialNumToRender={3}
+                                        horizontal={true}
+                                        data={credits.cast}
+                                        renderItem={(item) =>
+                                            <RenderItemAppearence
+                                                item={{
+                                                    itemId: item.item.id,
+                                                    itemName: item.item.name,
+                                                    itemPoster: item.item.profile_path,
+                                                    itemType: 'person'
+                                                }}
+                                                navigation={navigation}
+
+                                            />
+                                        }
+                                        keyExtractor={item => item.cast_id.toString()}
+
+                                    />)
+                            }
+                        </View>
+
+                        <View style={{ margin: 15 }}>
+                            <Text style={{justifyContent:'flex-start',marginLeft:15,fontSize:16}}>Similar</Text>
+                            <FlatList
+                                showsHorizontalScrollIndicator={false}
+                                initialNumToRender={3}
+                                horizontal={true}
+                                data={similarMovies}
+                                renderItem={({item}) =>
+                                    <RenderItemAppearence
+                                        item={{
+                                            itemId: item.id,
+                                            itemName: item.title,
+                                            itemPoster: item.poster_path,
+                                            itemType: 'movie'
+                                        }}
+                                        navigation={navigation}
+                                    />
                                 }
                                 keyExtractor={item => item.id.toString()}
                             />

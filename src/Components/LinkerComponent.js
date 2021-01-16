@@ -10,7 +10,7 @@ const LinkerComponent = ({ baseUrl, url, color, text }) => {
 
         padding: 10,
         alignSelf: 'center',
-        minWidth:80
+        minWidth: 80
     };
     const linkTo = () => {
 
@@ -29,7 +29,7 @@ const LinkerComponent = ({ baseUrl, url, color, text }) => {
     return (
         <TouchableOpacity onPress={linkTo} style={{ margin: 5 }}>
             <View style={background}>
-                <Text style={{ fontWeight: 'bold',alignSelf:'center' }}>
+                <Text style={{ fontWeight: 'bold', alignSelf: 'center' }}>
                     {text}
                 </Text>
             </View>
@@ -37,26 +37,37 @@ const LinkerComponent = ({ baseUrl, url, color, text }) => {
     );
 }
 
-const RenderExternalIDS = ({ ids, imdbUrl }) => {
+const RenderExternalIDS = ({ ids, imdbUrl, videos}) => {
     return (
-        <View style={{ flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'center' }}>
-            {
-                Object.keys(ids).map((value, index) => {
-                    if (ids[value] != null) {
-                        if (value == 'facebook_id')
-                            return <LinkerComponent key={ids[value] + index} baseUrl='fb.com/' url={ids[value]} color='#4267B2' text='Facebook' />
-                        if (value == 'imdb_id')
-                            return <LinkerComponent key={ids[value] + index} baseUrl={imdbUrl} url={ids[value]} color='yellow' text='More on Imdb' />
-                        if (value == 'twitter_id')
-                            return <LinkerComponent key={ids[value] + index} baseUrl='https://twitter.com/' url={ids[value]} color='#1DA1F2' text='Twitter' />
-                        if (value == 'instagram_id')
-                            return <LinkerComponent key={ids[value] + index} baseUrl='https://www.instagram.com/' url={ids[value]} color='#8a3ab9' text='Instagram' />
-                        if (value == 'homepage')
-                            return <LinkerComponent key={ids[value] + index} baseUrl='' url={ids[value]} color='grey' text='Website' />
-                    }
+        <View>
 
-                })
-            }
+            <View style={{ flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'center' }}>
+                {
+                    Object.keys(ids).map((value, index) => {
+                        if (ids[value] != null) {
+                            if (value == 'facebook_id')
+                                return <LinkerComponent key={ids[value] + index} baseUrl='https://fb.com/' url={ids[value]} color='#4267B2' text='Facebook' />
+                            if (value == 'imdb_id')
+                                return <LinkerComponent key={ids[value] + index} baseUrl={imdbUrl} url={ids[value]} color='yellow' text='More on Imdb' />
+                            if (value == 'twitter_id')
+                                return <LinkerComponent key={ids[value] + index} baseUrl='https://twitter.com/' url={ids[value]} color='#1DA1F2' text='Twitter' />
+                            if (value == 'instagram_id')
+                                return <LinkerComponent key={ids[value] + index} baseUrl='https://www.instagram.com/' url={ids[value]} color='#8a3ab9' text='Instagram' />
+                            if (value == 'homepage')
+                                return <LinkerComponent key={ids[value] + index} baseUrl='' url={ids[value]} color='grey' text='Website' />
+                        }
+                    })
+                }
+            </View>
+            <View style={{ flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'center' }}>
+                {
+                    videos.map(video => {
+                        if (video.site == 'YouTube') {
+                            return <LinkerComponent key={video.id} baseUrl='https://www.youtube.com/watch?v=' url={video.key} color='red' text={video.site + ' ' + video.type} />
+                        }
+                    })
+                }
+            </View>
         </View>
     )
 }
