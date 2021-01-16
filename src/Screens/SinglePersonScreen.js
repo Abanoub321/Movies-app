@@ -90,7 +90,7 @@ const PersonScreen = ({ route, navigation }) => {
                         )
                 }
                 <View style={rowDetail}>
-                    <RenderExternalIDS ids={{ ...externalIds, homepage: person.homepage }} imdbUrl='https://www.imdb.com/name/' />
+                    <RenderExternalIDS ids={{ ...externalIds, homepage: person.homepage }} imdbUrl='https://www.imdb.com/name/' videos={[]} />
                 </View>
 
                 <View>
