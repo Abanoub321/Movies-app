@@ -63,7 +63,7 @@ const TrendingScreenComponent = ({ navigation }) => {
   else {
 
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1,marginLeft:20 }}>
         <ScrollView
           refreshControl={
             <RefreshControl refreshing={!fetched} onRefresh={onRefresh} />
@@ -82,7 +82,8 @@ const TrendingScreenComponent = ({ navigation }) => {
                     itemId: item.item.id,
                     itemName: item.item.original_title,
                     itemPoster: item.item.poster_path,
-                    itemType: item.item.media_type
+                    itemType: item.item.media_type,
+                    previosState:''
                   }}
                   navigation={navigation}
                 />
@@ -103,7 +104,8 @@ const TrendingScreenComponent = ({ navigation }) => {
                     itemId: item.item.id,
                     itemName: item.item.name,
                     itemPoster: item.item.poster_path,
-                    itemType: item.item.media_type
+                    itemType: item.item.media_type,
+                    previosState:''
                   }}
                   navigation={navigation}
                 />
@@ -124,7 +126,8 @@ const TrendingScreenComponent = ({ navigation }) => {
                     itemId: item.item.id,
                     itemName: item.item.name,
                     itemPoster: item.item.profile_path,
-                    itemType: item.item.media_type
+                    itemType: item.item.media_type,
+                    previosState:''
                   }}
                   navigation={navigation}
                 />

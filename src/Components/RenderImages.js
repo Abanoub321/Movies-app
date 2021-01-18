@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, FlatList, Image } from 'react-native';
+import { View, FlatList, Image ,Dimensions} from 'react-native';
 import { baseUrl } from '../../Env';
 const RenderImages = ({ images }) => {
 
@@ -25,7 +25,8 @@ const RenderImage = (image) => {
                 style={{
                     height: 250,
                     aspectRatio: image.item.aspect_ratio,
-                    width: 250
+                    width:image.width,
+                    maxWidth: Math.round(Dimensions.get('window').width) ,
                 }}
             />
         </View>
