@@ -3,22 +3,34 @@ import {
     View,
     Text,
     Image,
-    StyleSheet,
     ScrollView,
     FlatList,
     ActivityIndicator,
-    RefreshControl
+    RefreshControl,
+    TouchableOpacity
 } from 'react-native';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
-import { LinkerComponent } from '../Components/LinkerComponent';
+import RenderImages from '../Components/RenderImages';
+import { RenderExternalIDS } from '../Components/LinkerComponent';
 import { apiKey, baseUrl } from '../../Env';
-import {backgroundImage,Title,titleHeader,overView,rowDetail,detailsHeader,centerdAboveDetail,genreContainer} from '../styles';
+import { backgroundImage, Title, buttons, overView, rowDetail, detailsHeader, centerdAboveDetail, genreContainer,buttonText } from '../styles';
+
 
 
 const TvScreen = ({ route, navigation }) => {
     const { id } = route.params;
     const [tv, setTv] = useState([]);
     const [fetched, setFetched] = useState(false);
+    const [credits, setCredits] = useState({});
+    const [externalIds, setExternalIds] = useState({});
+    const [videos, setVideos] = useState([]);
+    const [images, setImages] = useState({});
+    const [similar, setSimilar] = useState({})
+    const [imageBPressed, setImageBPressed] = useState(false);
+    const [seasonBPressed, setSeasonBPressed] = useState(false);
+    const [castBPressed, setCastBPressed] = useState(false);
+    const [companiesBPressed, setCompaniesBPressed] = useState(false);
+    const [similarBPressed, setSimilarBPressed] = useState(false);
 
     useEffect(() => {
         if (!fetched)
@@ -30,7 +42,27 @@ const TvScreen = ({ route, navigation }) => {
         let url = `https://api.themoviedb.org/3/tv/${id}?api_key=${apiKey}&language=en-US`;
         let response = await fetch(url);
         let tv = await response.json();
+        url = `https://api.themoviedb.org/3/tv/${id}/credits?api_key=${apiKey}&language=en-US`;
+        response = await fetch(url);
+        let tvCreditsData = await response.json();
+        url = `https://api.themoviedb.org/3/tv/${id}/external_ids?api_key=${apiKey}&language=en-US`;
+        response = await fetch(url);
+        let tvExternalIds = await response.json();
+        url = `https://api.themoviedb.org/3/tv/${id}/videos?api_key=${apiKey}&language=en-US`;
+        response = await fetch(url);
+        let tvVideos = await response.json();
+        url = `https://api.themoviedb.org/3/tv/${id}/images?api_key=${apiKey}`;
+        response = await fetch(url);
+        let tvImages = await response.json();
+        url = `https://api.themoviedb.org/3/tv/${id}/similar?api_key=${apiKey}`;
+        response = await fetch(url);
+        let tvSimilar = await response.json();
         setTv(tv);
+        setCredits(tvCreditsData);
+        setExternalIds(tvExternalIds);
+        setVideos(tvVideos.results);
+        setImages(tvImages.backdrops.concat(tvImages.posters));
+        setSimilar(tvSimilar.results);
         setFetched(true);
     }
 
@@ -42,8 +74,37 @@ const TvScreen = ({ route, navigation }) => {
             </View>
         )
     }
-    const onRefresh = ()=>{
+    const onRefresh = () => {
         setFetched(false);
+    }
+
+    const setFalse = () => {
+        setCastBPressed(false);
+        setCompaniesBPressed(false);
+        setImageBPressed(false);
+        setSeasonBPressed(false);
+        setSimilarBPressed(false);
+    }
+    const imagePressed = () => {
+        setFalse();
+        setImageBPressed(!imageBPressed);
+    }
+
+    const seasonPressed = () => {
+        setFalse();
+        setSeasonBPressed(!seasonBPressed);
+    }
+    const castPressed = () => {
+        setFalse();
+        setCastBPressed(!castBPressed);
+    }
+    const companiesPressed = () => {
+        setFalse();
+        setCompaniesBPressed(!companiesBPressed);
+    }
+    const similarPressed = () => {
+        setFalse();
+        setSimilarBPressed(!similarBPressed);
     }
     if (!fetched) {
         return (
@@ -151,51 +212,154 @@ const TvScreen = ({ route, navigation }) => {
                             keyExtractor={item => item.id.toString()}
                         />
                     </View>
-                    <View style={rowDetail}>
-                        <LinkerComponent url={tv.homepage} baseUrl='' color='grey' text='See on Website' />
-                    </View>
-                    <View style={{ margin: 15 }}>
-                        <Text style={titleHeader}>Seasons</Text>
-                        <FlatList
-                            showsHorizontalScrollIndicator={false}
-                            initialNumToRender={3}
-                            horizontal={true}
-                            data={tv.seasons}
-                            renderItem={(item) =>
-                                <RenderItemAppearence
-                                    item={{
-                                        itemId: id,
-                                        itemName: item.item.name,
-                                        itemPoster: item.item.poster_path,
-                                        itemSeason: item.item.season_number,
-                                        itemType: 'season'
-                                    }}
-                                    navigation={navigation}
 
-                                />
-                            }
-                            keyExtractor={item => item.id.toString()}
-                        />
-                        <View style={{ margin: 15 }}>
-                            <Text style={titleHeader}>Production Companies</Text>
+                    <View style={[rowDetail, { marginTop: 15, marginBottom: 15, flexWrap: 'wrap' }]}>
+
+                        <TouchableOpacity onPress={imagePressed} style={buttons}>
+                            <Text style={buttonText}>Images</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={seasonPressed} style={buttons}>
+                            <Text style={buttonText}>Seasons</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={castPressed} style={buttons}>
+                            <Text style={buttonText}>Cast</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={companiesPressed} style={buttons}>
+                            <Text style={buttonText}>production companies</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={similarPressed} style={buttons}>
+                            <Text style={buttonText}>Similar</Text>
+                        </TouchableOpacity>
+                    </View>
+                    {
+                        imageBPressed ? <RenderImages images={images} /> : null
+                    }
+
+                    {
+                        seasonBPressed ? (<View style={{ margin: 15 }}>
                             <FlatList
                                 showsHorizontalScrollIndicator={false}
                                 initialNumToRender={3}
                                 horizontal={true}
-                                data={tv.production_companies}
+                                data={tv.seasons}
                                 renderItem={(item) =>
                                     <RenderItemAppearence
                                         item={{
-                                            itemId: item.item.id,
+                                            itemId: id,
                                             itemName: item.item.name,
-                                            itemPoster: item.item.logo_path,
-                                            itemType: 'logo'
+                                            itemPoster: item.item.poster_path,
+                                            itemSeason: item.item.season_number,
+                                            itemType: 'season',
+                                            previosState: 'tv'
+
                                         }}
+                                        navigation={navigation}
+
                                     />
                                 }
                                 keyExtractor={item => item.id.toString()}
                             />
                         </View>
+                        ) : null
+                    }
+                    {
+                        castBPressed ? (
+                            <View>
+
+                                {
+                                    !credits.cast ?
+                                        (<View style={{ margin: 15 }}>
+                                            <Text>Sorry there is nothing to view</Text>
+                                        </View>
+                                        ) :
+                                        (<FlatList
+                                            showsHorizontalScrollIndicator={false}
+                                            initialNumToRender={3}
+                                            horizontal={true}
+                                            data={credits.cast}
+                                            renderItem={(item) =>
+                                                <RenderItemAppearence
+                                                    item={{
+                                                        itemId: item.item.id,
+                                                        itemName: item.item.name,
+                                                        itemPoster: item.item.profile_path,
+                                                        itemType: 'person',
+                                                        previosState: 'tv'
+                                                    }}
+                                                    navigation={navigation}
+
+                                                />
+                                            }
+                                            keyExtractor={item => item.credit_id.toString()}
+
+                                        />)
+                                }
+                            </View>
+                        ) : null
+                    }
+
+                    {
+                        companiesBPressed ? (
+                            <View style={{ margin: 15 }}>
+                                {tv.production_companies.length > 0 ?
+                                    (<View style={{ margin: 15 }}>
+                                        <Text>Sorry there is nothing to view</Text>
+                                    </View>
+                                    ) : (
+                                        <FlatList
+                                            showsHorizontalScrollIndicator={false}
+                                            initialNumToRender={3}
+                                            horizontal={true}
+                                            data={tv.production_companies}
+                                            renderItem={(item) =>
+                                                <RenderItemAppearence
+                                                    item={{
+                                                        itemId: item.item.id,
+                                                        itemName: item.item.name,
+                                                        itemPoster: item.item.logo_path,
+                                                        itemType: 'logo',
+                                                        previosState: 'tv'
+                                                    }}
+                                                />
+                                            }
+                                            keyExtractor={item => item.id.toString()}
+                                        />
+                                    )
+                                }
+                            </View>
+                        ) : null
+                    }
+                    {
+                        similarBPressed ? (
+                            similar ? (<View>
+                                <FlatList
+                                            showsHorizontalScrollIndicator={false}
+                                            initialNumToRender={3}
+                                            horizontal={true}
+                                            data={similar}
+                                            renderItem={(item) =>
+                                                <RenderItemAppearence
+                                                    item={{
+                                                        itemId: item.item.id,
+                                                        itemName: item.item.name,
+                                                        itemPoster: item.item.poster_path,
+                                                        itemType: 'tv',
+                                                        previosState: 'tv'
+                                                    }}
+                                                    navigation={navigation}
+                                                />
+                                            }
+                                            keyExtractor={item => item.id.toString()}
+                                        />
+                            </View>) : (
+                                    <View style={{ margin: 10 }}>
+                                        <Text>Sorry there is nothing to view</Text>
+                                    </View>
+                                )
+                        ) : null
+                    }
+                    <View style={rowDetail}>
+                        <RenderExternalIDS ids={{ ...externalIds, homepage: tv.homepage }} imdbUrl='https://www.imdb.com/title/' videos={videos} />
                     </View>
                 </View>
             </ScrollView>

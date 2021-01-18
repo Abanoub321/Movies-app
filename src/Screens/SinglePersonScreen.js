@@ -1,9 +1,9 @@
 
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, Image, ActivityIndicator, RefreshControl, FlatList, TouchableOpacity, Touchable } from 'react-native';
+import { View, Text, ScrollView, Image, ActivityIndicator, RefreshControl, FlatList, TouchableOpacity } from 'react-native';
 import { RenderExternalIDS } from '../Components/LinkerComponent';
 import { apiKey, baseUrl } from '../../Env';
-import { posterImage, Title, overView, rowDetail, detailsHeader, centerdAboveDetail } from '../styles';
+import { posterImage, Title, overView, rowDetail, detailsHeader, centerdAboveDetail, buttons,buttonText } from '../styles';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
 const PersonScreen = ({ route, navigation }) => {
@@ -14,7 +14,8 @@ const PersonScreen = ({ route, navigation }) => {
     const [externalIds, setExternalId] = useState({});
     const [images, setImages] = useState({});
     const [imageBPressed, setImageBPressed] = useState(false);
-    const [imageTitle, setImageTitle] = useState('Show Images');
+    const [castBPressed, setCastBPressed] = useState(false);
+    const [crewBPressed, setCrewBPressed] = useState(false);
     useEffect(() => {
         if (!fetched)
             fetchPerson();
@@ -42,13 +43,23 @@ const PersonScreen = ({ route, navigation }) => {
     const onRefresh = () => {
         setFetched(false);
     }
+    const setFalse = () => {
+        setCastBPressed(false);
+        setCrewBPressed(false);
+        setImageBPressed(false);
+    }
 
-    const imageButton = () => {
+    const castPressed = () => {
+        setFalse();
+        setCastBPressed(!castBPressed);
+    }
+    const crewPressed = () => {
+        setFalse();
+        setCrewBPressed(!crewBPressed);
+    }
+    const imagePressed = () => {
+        setFalse();
         setImageBPressed(!imageBPressed);
-        if (imageBPressed)
-            setImageTitle('More Images')
-        else
-            setImageTitle('Less Images')
     }
     if (fetched) {
         return (
@@ -96,14 +107,27 @@ const PersonScreen = ({ route, navigation }) => {
                 <View>
                     <Text style={overView}>{person.biography}</Text>
                 </View>
-                <View style={{ margin: 15 }}>
-                    <Text style={[{ fontSize: 20, margin: 10 }, detailsHeader]}>Cast :</Text>
-                    {
-                        credits.cast.length < 1 ?
-                            (<View style={{ margin: 15 }}>
-                                <Text>Sorry there is nothing to view</Text>
-                            </View>
-                            ) :
+                <View style={[rowDetail, { marginTop: 15, marginBottom: 15, flexWrap: 'wrap' }]}>
+
+
+
+                    <TouchableOpacity onPress={castPressed} style={buttons}>
+                        <Text style={buttonText}>Cast</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={crewPressed} style={buttons}>
+                        <Text style={buttonText}>Crew</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={imagePressed} style={buttons}>
+                        <Text style={buttonText}>Images</Text>
+                    </TouchableOpacity>
+                </View>
+                {
+                    castBPressed ? (
+                        credits.cast.length < 1 ? (<View style={{ margin: 15 }}>
+                            <Text>Sorry there is nothing to view</Text>
+                        </View>
+                        ) :
                             (<FlatList
                                 showsHorizontalScrollIndicator={false}
                                 initialNumToRender={3}
@@ -115,7 +139,8 @@ const PersonScreen = ({ route, navigation }) => {
                                             itemId: item.item.id,
                                             itemName: item.item.title,
                                             itemPoster: item.item.poster_path,
-                                            itemType: item.item.media_type
+                                            itemType: item.item.media_type,
+                                            previosState: 'person'
                                         }}
                                         navigation={navigation}
 
@@ -124,11 +149,10 @@ const PersonScreen = ({ route, navigation }) => {
                                 keyExtractor={item => item.credit_id}
 
                             />)
-                    }
-                </View>
-                <View style={{ margin: 15 }}>
-                    <Text style={[{ fontSize: 20, margin: 10 }, detailsHeader]}>Crew :</Text>
-                    {
+                    ) : null
+                }
+                {
+                    crewBPressed ? (
                         credits.crew < 1 ?
                             (
                                 <View style={{ margin: 15 }}>
@@ -147,7 +171,8 @@ const PersonScreen = ({ route, navigation }) => {
                                                 itemId: item.item.id,
                                                 itemName: item.item.title,
                                                 itemPoster: item.item.poster_path,
-                                                itemType: item.item.media_type
+                                                itemType: item.item.media_type,
+                                                previosState: 'person'
                                             }}
                                             navigation={navigation}
 
@@ -156,16 +181,13 @@ const PersonScreen = ({ route, navigation }) => {
                                     keyExtractor={item => item.credit_id}
 
                                 />)
-                    }
-                </View>
+                    ) : null
+                }
+               
                 {
                     imageBPressed ? <RenderImages images={images.profiles} /> : null
                 }
-                <TouchableOpacity onPress={imageButton}>
-                    <View style={rowDetail}>
-                        <Text style={[{ backgroundColor: 'purple', padding: 15, borderRadius: 15, color: 'black',fontWeight:'bold' }]}>{imageTitle}</Text>
-                    </View>
-                </TouchableOpacity>
+               
             </ScrollView>
         );
     }

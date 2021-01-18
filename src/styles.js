@@ -53,3 +53,14 @@ export const   genreContainer= {
     marginLeft: 10,
     flexWrap: 'wrap'
 }
+export const buttons ={
+    padding:8,
+    backgroundColor:'#7E7777',
+    borderRadius:10,
+    marginBottom:15,
+    minWidth:60,
+    alignItems:'center'
+}
+export const buttonText ={
+    color:'white'
+}

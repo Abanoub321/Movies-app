@@ -15,7 +15,7 @@ import { RenderExternalIDS } from '../Components/LinkerComponent';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
 import { apiKey, baseUrl } from '../../Env';
-import { detailsHeader, overView, genreContainer, rowDetail, centerdAboveDetail, Title } from '../styles';
+import { detailsHeader, overView, genreContainer, rowDetail, centerdAboveDetail, buttons,buttonText } from '../styles';
 const MovieScreen = ({ route, navigation }) => {
 
     const { id } = route.params;
@@ -24,15 +24,17 @@ const MovieScreen = ({ route, navigation }) => {
     const [credits, setCredits] = useState({});
     const [externalIds, setExternalIds] = useState({});
     const [images, setImages] = useState({});
+    const [similarMovies, setSimilarMovies] = useState([]);
+    const [videos, setVideos] = useState([]);
     const [imageBPressed, setImageBPressed] = useState(false);
-    const [imageTitle, setImageTitle] = useState('Show Images');
-    const [similarMovies,setSimilarMovies] = useState([]);
-    const [videos,setVideos] = useState([]);
+    const [similarBPressed, setSimilarBPressed] = useState(false);
+    const [castBPressed, setCastBPressed] = useState(false);
+    const [companiesBPressed, setCompaniesBPressed] = useState(false);
     useEffect(() => {
         if (!fetched)
             fetchMovieData();
         setFetched(true);
-    }, [fetched])
+    }, [fetched,navigation])
 
     const fetchMovieData = async () => {
         let url = `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=en-US`;
@@ -79,6 +81,31 @@ const MovieScreen = ({ route, navigation }) => {
     }
     const onRefresh = () => {
         setFetched(false);
+    }
+
+
+    const setFalse = () => {
+        setCastBPressed(false);
+        setCompaniesBPressed(false);
+        setImageBPressed(false);
+        setSimilarBPressed(false);
+    }
+    const imagePressed = () => {
+        setFalse();
+        setImageBPressed(!imageBPressed);
+    }
+
+    const similarPressed = () => {
+        setFalse();
+        setSimilarBPressed(!similarBPressed);
+    }
+    const castPressed = () => {
+        setFalse();
+        setCastBPressed(!castBPressed);
+    }
+    const companiesPressed = () => {
+        setFalse();
+        setCompaniesBPressed(!companiesBPressed);
     }
     if (!fetched) {
         return (
@@ -149,9 +176,6 @@ const MovieScreen = ({ route, navigation }) => {
                                 {movie.overview}
                             </Text>
                         </View>
-                        <View style={rowDetail}>
-                            <RenderExternalIDS ids={{ ...externalIds, homepage: movie.homepage }} imdbUrl='https://www.imdb.com/title/' videos={videos} />
-                        </View>
                         <View style={genreContainer}>
                             <Text style={detailsHeader}>
                                 Genres:
@@ -167,114 +191,111 @@ const MovieScreen = ({ route, navigation }) => {
                                 keyExtractor={item => item.id.toString()}
                             />
                         </View>
+                        <View style={[rowDetail, { marginTop: 15, marginBottom: 15 }]}>
+
+                            <TouchableOpacity onPress={imagePressed} style={buttons}>
+                                <Text style={buttonText}>Images</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={castPressed} style={buttons}>
+                                <Text style={buttonText}>Cast</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={similarPressed} style={buttons}>
+                                <Text style={buttonText}>Similar</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={companiesPressed} style={buttons}>
+                                <Text style={buttonText}>production companies</Text>
+                            </TouchableOpacity>
+                        </View>
+
 
                         {
                             imageBPressed ? <RenderImages images={images} /> : null
                         }
-                        <TouchableOpacity onPress={imageButton}>
-                            <View style={rowDetail}>
-                                <Text style={[{ backgroundColor: 'purple', padding: 15, borderRadius: 15, color: 'black', fontWeight: 'bold' }]}>{imageTitle}</Text>
-                            </View>
-                        </TouchableOpacity>
-                        <Text style={[{ fontSize: 20, margin: 10 }, detailsHeader]}>Cast :</Text>
                         {
-                            !credits.cast ?
-                                (<View style={{ margin: 15 }}>
-                                    <Text>Sorry there is nothing to view</Text>
-                                </View>
-                                ) :
-                                (<FlatList
-                                    showsHorizontalScrollIndicator={false}
-                                    initialNumToRender={3}
-                                    horizontal={true}
-                                    data={credits.cast}
-                                    renderItem={(item) =>
-                                        <RenderItemAppearence
-                                            item={{
-                                                itemId: item.item.id,
-                                                itemName: item.item.name,
-                                                itemPoster: item.item.profile_path,
-                                                itemType: 'person'
-                                            }}
-                                            navigation={navigation}
+                            castBPressed ? (
+                                <View>
+                                    {
+                                        !credits.cast ?
+                                            (<View style={{ margin: 15 }}>
+                                                <Text>Sorry there is nothing to view</Text>
+                                            </View>
+                                            ) :
+                                            (<FlatList
+                                                showsHorizontalScrollIndicator={false}
+                                                initialNumToRender={3}
+                                                horizontal={true}
+                                                data={credits.cast}
+                                                renderItem={(item) =>
+                                                    <RenderItemAppearence
+                                                        item={{
+                                                            itemId: item.item.id,
+                                                            itemName: item.item.name,
+                                                            itemPoster: item.item.profile_path,
+                                                            itemType: 'person',
+                                                            previosState:'movie'
+                                                        }}
+                                                        navigation={navigation}
+                                                    />
+                                                }
+                                                keyExtractor={item => item.cast_id.toString()}
 
-                                        />
+                                            />)
+
                                     }
-                                    keyExtractor={item => item.cast_id.toString()}
-
-                                />)
+                                </View>
+                            ) : null
                         }
-
-                        <View>
-                            <Text style={[{ fontSize: 20, margin: 10 }, detailsHeader]}>Crew :</Text>
-                            {
-                                !credits.crew ?
-                                    (<View style={{ margin: 15 }}>
-                                        <Text>Sorry there is nothing to view</Text>
-                                    </View>
-                                    ) :
-                                    (<FlatList
+                        {
+                            similarBPressed ? (
+                                <View style={{ margin: 15 }}>
+                                    <FlatList
                                         showsHorizontalScrollIndicator={false}
                                         initialNumToRender={3}
                                         horizontal={true}
-                                        data={credits.cast}
+                                        data={similarMovies}
+                                        renderItem={({ item }) =>
+                                            <RenderItemAppearence
+                                                item={{
+                                                    itemId: item.id,
+                                                    itemName: item.title,
+                                                    itemPoster: item.poster_path,
+                                                    itemType: 'movie',
+                                                    previosState:'movie'
+                                                }}
+                                                navigation={navigation}
+                                            />
+                                        }
+                                        keyExtractor={item => item.id.toString()}
+                                    />
+                                </View>
+                            ) : null
+                        }
+                        {
+                            companiesBPressed ? (
+                                <View style={{ margin: 15 }}>
+                                    <FlatList
+                                        showsHorizontalScrollIndicator={false}
+                                        initialNumToRender={3}
+                                        horizontal={true}
+                                        data={movie.production_companies}
                                         renderItem={(item) =>
                                             <RenderItemAppearence
                                                 item={{
                                                     itemId: item.item.id,
                                                     itemName: item.item.name,
-                                                    itemPoster: item.item.profile_path,
-                                                    itemType: 'person'
+                                                    itemPoster: item.item.logo_path,
+                                                    itemType: 'logo',
+                                                    previosState:'movie'
                                                 }}
-                                                navigation={navigation}
-
                                             />
                                         }
-                                        keyExtractor={item => item.cast_id.toString()}
-
-                                    />)
-                            }
-                        </View>
-
-                        <View style={{ margin: 15 }}>
-                            <Text style={{justifyContent:'flex-start',marginLeft:15,fontSize:16}}>Similar</Text>
-                            <FlatList
-                                showsHorizontalScrollIndicator={false}
-                                initialNumToRender={3}
-                                horizontal={true}
-                                data={similarMovies}
-                                renderItem={({item}) =>
-                                    <RenderItemAppearence
-                                        item={{
-                                            itemId: item.id,
-                                            itemName: item.title,
-                                            itemPoster: item.poster_path,
-                                            itemType: 'movie'
-                                        }}
-                                        navigation={navigation}
+                                        keyExtractor={item => item.id.toString()}
                                     />
-                                }
-                                keyExtractor={item => item.id.toString()}
-                            />
-                        </View>
-                        <View style={{ margin: 15 }}>
-                            <FlatList
-                                showsHorizontalScrollIndicator={false}
-                                initialNumToRender={3}
-                                horizontal={true}
-                                data={movie.production_companies}
-                                renderItem={(item) =>
-                                    <RenderItemAppearence
-                                        item={{
-                                            itemId: item.item.id,
-                                            itemName: item.item.name,
-                                            itemPoster: item.item.logo_path,
-                                            itemType: 'logo'
-                                        }}
-                                    />
-                                }
-                                keyExtractor={item => item.id.toString()}
-                            />
+                                </View>
+                            ) : null
+                        }
+                        <View style={rowDetail}>
+                            <RenderExternalIDS ids={{ ...externalIds, homepage: movie.homepage }} imdbUrl='https://www.imdb.com/title/' videos={videos} />
                         </View>
                     </View>
                 </View>
