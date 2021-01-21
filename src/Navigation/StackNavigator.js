@@ -9,6 +9,7 @@ import EpisodeScreen from '../Screens/SingleEpisodeScreen';
 import PersonScreen from '../Screens/SinglePersonScreen';
 import DiscoverMovies from '../Screens/DiscoverMovieScreen';
 import DiscoverSeries from '../Screens/DiscoverSeriesScreen';
+import DiscoverPeople from '../Screens/DiscoverPeopleScreen'
 const Stack = createStackNavigator();
 
 const screenOptionStyle = {
@@ -102,4 +103,32 @@ const DiscoverSeriesStack = ({ navigation }) => {
 }
 
 
-export { TrendingStackNavigator,DiscoverMoviesStack,DiscoverSeriesStack };
+const DiscoverPeopleStack = ({ navigation }) => {
+  return (
+    <Stack.Navigator screenOptions={screenOptionStyle}>
+      <Stack.Screen name="Discover People" component={DiscoverPeople} options={{
+
+        headerLeft: () => (
+          <NavigationDrawerStructure
+            navigationProps={navigation}
+          />
+        ),
+        headerStyle: {
+          backgroundColor: '#f4511e', //Set Header color
+        },
+        headerTintColor: '#fff', //Set Header text color
+        headerTitleStyle: {
+          fontWeight: 'bold', //Set Header text style
+        },
+      }} />
+      <Stack.Screen name="Series" component={TvScreen} />
+      <Stack.Screen name="Movie" component={MovieScreen} />
+      <Stack.Screen name="Season" component={SeasonScreen} />
+      <Stack.Screen name="Episode" component={EpisodeScreen} />
+      <Stack.Screen name="Person" component={PersonScreen} />
+    </Stack.Navigator>
+  );
+}
+
+
+export { TrendingStackNavigator,DiscoverMoviesStack,DiscoverSeriesStack,DiscoverPeopleStack };
