@@ -109,7 +109,7 @@ const RenderItemAppearence = ({ item, navigation }) => {
   return (
 
 
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity onPress={onPress} style={{flex:1/2}}>
       <View>
         {
           renderImage()
@@ -134,7 +134,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     textAlign: "center",
     flexWrap: 'wrap',
-    maxWidth: 200
+    maxWidth: 200,
+    marginBottom:10
   },
   image: {
     width: 175,

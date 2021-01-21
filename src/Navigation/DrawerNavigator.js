@@ -2,7 +2,7 @@ import React from "react";
 import { View, TouchableOpacity, Image } from 'react-native';
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
-import { TrendingStackNavigator } from './StackNavigator';
+import { TrendingStackNavigator,DiscoverMoviesStack } from './StackNavigator';
 import CustomSidebarMenu from './CostomSideBarMenu';
 
 const Drawer = createDrawerNavigator();
@@ -40,6 +40,7 @@ const DrawerNavigator = () => {
       drawerContent={(props) => <CustomSidebarMenu {...props} />}>
 
       <Drawer.Screen name="Trending" component={TrendingStackNavigator} />
+      <Drawer.Screen name="Discover Movies" component={DiscoverMoviesStack} />
     </Drawer.Navigator>
   );
 }

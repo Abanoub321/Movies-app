@@ -1,6 +1,7 @@
 apply plugin: "com.android.application"
 
-import com.android.build.OutputFile
+import com.android.build.OutputFile;
+
 
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
@@ -207,6 +208,8 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    implementation project(path:':@react-native-picker_picker')
 }
 
 // Run this once to be able to run the application with BUCK
