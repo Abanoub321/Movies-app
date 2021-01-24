@@ -9,7 +9,9 @@ import EpisodeScreen from '../Screens/SingleEpisodeScreen';
 import PersonScreen from '../Screens/SinglePersonScreen';
 import DiscoverMovies from '../Screens/DiscoverMovieScreen';
 import DiscoverSeries from '../Screens/DiscoverSeriesScreen';
-import DiscoverPeople from '../Screens/DiscoverPeopleScreen'
+import DiscoverPeople from '../Screens/DiscoverPeopleScreen';
+import LoginScreen from '../Screens/loginScreen';
+import ProfileScreen from '../Screens/ProfileScreen';
 const Stack = createStackNavigator();
 
 const screenOptionStyle = {
@@ -130,5 +132,46 @@ const DiscoverPeopleStack = ({ navigation }) => {
   );
 }
 
+const LoginStack = ({ navigation }) =>{
+  return (
+    <Stack.Navigator screenOptions={screenOptionStyle}>
+      <Stack.Screen name="Discover People" component={LoginScreen} options={{
 
-export { TrendingStackNavigator,DiscoverMoviesStack,DiscoverSeriesStack,DiscoverPeopleStack };
+        headerLeft: () => (
+          <NavigationDrawerStructure
+            navigationProps={navigation}
+          />
+        ),
+        headerStyle: {
+          backgroundColor: '#f4511e', //Set Header color
+        },
+        headerTintColor: '#fff', //Set Header text color
+        headerTitleStyle: {
+          fontWeight: 'bold', //Set Header text style
+        },
+      }} />
+    </Stack.Navigator>
+  );
+}
+const ProfileStack = ({ navigation }) =>{
+  return (
+    <Stack.Navigator screenOptions={screenOptionStyle}>
+      <Stack.Screen name="Profile" component={ProfileScreen} options={{
+
+        headerLeft: () => (
+          <NavigationDrawerStructure
+            navigationProps={navigation}
+          />
+        ),
+        headerStyle: {
+          backgroundColor: '#f4511e', //Set Header color
+        },
+        headerTintColor: '#fff', //Set Header text color
+        headerTitleStyle: {
+          fontWeight: 'bold', //Set Header text style
+        },
+      }} />
+    </Stack.Navigator>
+  );
+}
+export { TrendingStackNavigator,DiscoverMoviesStack,DiscoverSeriesStack,DiscoverPeopleStack,LoginStack ,ProfileStack};

@@ -11,17 +11,19 @@ import {
     ActivityIndicator,
     TouchableOpacity
 } from 'react-native';
+import RatingComponent from '../Components/RatingComponent';
 import { RenderExternalIDS } from '../Components/LinkerComponent';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
 import { apiKey, baseUrl } from '../../Env';
-import { detailsHeader, overView, genreContainer, rowDetail, centerdAboveDetail, buttons,buttonText } from '../styles';
+import { detailsHeader, overView, genreContainer, rowDetail, centerdAboveDetail, buttons, buttonText } from '../styles';
 const MovieScreen = ({ route, navigation }) => {
 
     const { id } = route.params;
     const [fetched, setFetched] = useState(false);
     const [movie, setMovie] = useState({});
     const [credits, setCredits] = useState({});
+    const [rating,setRating] = useState('');
     const [externalIds, setExternalIds] = useState({});
     const [images, setImages] = useState({});
     const [similarMovies, setSimilarMovies] = useState([]);
@@ -34,7 +36,7 @@ const MovieScreen = ({ route, navigation }) => {
         if (!fetched)
             fetchMovieData();
         setFetched(true);
-    }, [fetched,navigation])
+    }, [fetched, navigation])
 
     const fetchMovieData = async () => {
         let url = `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=en-US`;
@@ -70,7 +72,10 @@ const MovieScreen = ({ route, navigation }) => {
         else
             setImageTitle('Less Images')
     }
-
+    const rate = (rating) => {
+        setRating(rating)
+        console.log(`Rating is ${rating}`)
+    }
     const handleGenres = ({ item }) => {
         return (
             <View style={genreContainer}>
@@ -165,10 +170,17 @@ const MovieScreen = ({ route, navigation }) => {
                                 </Text>
                             </View>
                         </View>
+
                         <View style={{ alignSelf: 'center' }}>
                             <Text style={{ fontSize: 20, color: 'red' }}>
                                 {movie.status}
                             </Text>
+                        </View>
+                        <View style={centerdAboveDetail}>
+                            {
+                                rating != ''? <Text>Your rating : {rating}</Text> : null
+                            }  
+                            <RatingComponent onPress = {rate}/>
                         </View>
 
                         <View>
@@ -232,7 +244,7 @@ const MovieScreen = ({ route, navigation }) => {
                                                             itemName: item.item.name,
                                                             itemPoster: item.item.profile_path,
                                                             itemType: 'person',
-                                                            previosState:'movie'
+                                                            previosState: 'movie'
                                                         }}
                                                         navigation={navigation}
                                                     />
@@ -260,7 +272,7 @@ const MovieScreen = ({ route, navigation }) => {
                                                     itemName: item.title,
                                                     itemPoster: item.poster_path,
                                                     itemType: 'movie',
-                                                    previosState:'movie'
+                                                    previosState: 'movie'
                                                 }}
                                                 navigation={navigation}
                                             />
@@ -285,7 +297,7 @@ const MovieScreen = ({ route, navigation }) => {
                                                     itemName: item.item.name,
                                                     itemPoster: item.item.logo_path,
                                                     itemType: 'logo',
-                                                    previosState:'movie'
+                                                    previosState: 'movie'
                                                 }}
                                             />
                                         }
