@@ -9,23 +9,19 @@ import {
     RefreshControl,
     TouchableOpacity
 } from 'react-native';
+import { connect } from 'react-redux';
+import { fetchTvData } from '../actions';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
 import { RenderExternalIDS } from '../Components/LinkerComponent';
-import { apiKey, baseUrl } from '../../Env';
-import { backgroundImage, Title, buttons, overView, rowDetail, detailsHeader, centerdAboveDetail, genreContainer,buttonText } from '../styles';
+import { baseUrl } from '../../Env';
+import { backgroundImage, Title, buttons, overView, rowDetail, detailsHeader, centerdAboveDetail, genreContainer, buttonText } from '../styles';
 
 
 
-const TvScreen = ({ route, navigation }) => {
-    const { id } = route.params;
-    const [tv, setTv] = useState([]);
+const TvScreen = (props) => {
+    const { route, navigation, tv, credits, externalIds, images, similar, videos, errors,fetchTvData } = props;
     const [fetched, setFetched] = useState(false);
-    const [credits, setCredits] = useState({});
-    const [externalIds, setExternalIds] = useState({});
-    const [videos, setVideos] = useState([]);
-    const [images, setImages] = useState({});
-    const [similar, setSimilar] = useState({})
     const [imageBPressed, setImageBPressed] = useState(false);
     const [seasonBPressed, setSeasonBPressed] = useState(false);
     const [castBPressed, setCastBPressed] = useState(false);
@@ -34,37 +30,13 @@ const TvScreen = ({ route, navigation }) => {
 
     useEffect(() => {
         if (!fetched)
-            fetchTvData();
-
+            fetchTvData(route.params.id);
+        setTimeout(() => {
+            if (errors == '')
+                setFetched(true);
+        },1500)
     }, [fetched])
 
-    const fetchTvData = async () => {
-        let url = `https://api.themoviedb.org/3/tv/${id}?api_key=${apiKey}&language=en-US`;
-        let response = await fetch(url);
-        let tv = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${id}/credits?api_key=${apiKey}&language=en-US`;
-        response = await fetch(url);
-        let tvCreditsData = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${id}/external_ids?api_key=${apiKey}&language=en-US`;
-        response = await fetch(url);
-        let tvExternalIds = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${id}/videos?api_key=${apiKey}&language=en-US`;
-        response = await fetch(url);
-        let tvVideos = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${id}/images?api_key=${apiKey}`;
-        response = await fetch(url);
-        let tvImages = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${id}/similar?api_key=${apiKey}`;
-        response = await fetch(url);
-        let tvSimilar = await response.json();
-        setTv(tv);
-        setCredits(tvCreditsData);
-        setExternalIds(tvExternalIds);
-        setVideos(tvVideos.results);
-        setImages(tvImages.backdrops.concat(tvImages.posters));
-        setSimilar(tvSimilar.results);
-        setFetched(true);
-    }
 
     const handleGenres = ({ item }) => {
         return (
@@ -245,7 +217,7 @@ const TvScreen = ({ route, navigation }) => {
                                 renderItem={(item) =>
                                     <RenderItemAppearence
                                         item={{
-                                            itemId: id,
+                                            itemId: route.params.id,
                                             itemName: item.item.name,
                                             itemPoster: item.item.poster_path,
                                             itemSeason: item.item.season_number,
@@ -333,24 +305,24 @@ const TvScreen = ({ route, navigation }) => {
                         similarBPressed ? (
                             similar ? (<View>
                                 <FlatList
-                                            showsHorizontalScrollIndicator={false}
-                                            initialNumToRender={3}
-                                            horizontal={true}
-                                            data={similar}
-                                            renderItem={(item) =>
-                                                <RenderItemAppearence
-                                                    item={{
-                                                        itemId: item.item.id,
-                                                        itemName: item.item.name,
-                                                        itemPoster: item.item.poster_path,
-                                                        itemType: 'tv',
-                                                        previosState: 'tv'
-                                                    }}
-                                                    navigation={navigation}
-                                                />
-                                            }
-                                            keyExtractor={item => item.id.toString()}
+                                    showsHorizontalScrollIndicator={false}
+                                    initialNumToRender={3}
+                                    horizontal={true}
+                                    data={similar}
+                                    renderItem={(item) =>
+                                        <RenderItemAppearence
+                                            item={{
+                                                itemId: item.item.id,
+                                                itemName: item.item.name,
+                                                itemPoster: item.item.poster_path,
+                                                itemType: 'tv',
+                                                previosState: 'tv'
+                                            }}
+                                            navigation={navigation}
                                         />
+                                    }
+                                    keyExtractor={item => item.id.toString()}
+                                />
                             </View>) : (
                                     <View style={{ margin: 10 }}>
                                         <Text>Sorry there is nothing to view</Text>
@@ -367,4 +339,8 @@ const TvScreen = ({ route, navigation }) => {
     }
 }
 
-export default TvScreen;
+const mapStateToProps = state => {
+    return state.tv;
+}
+
+export default connect(mapStateToProps, {fetchTvData })(TvScreen);

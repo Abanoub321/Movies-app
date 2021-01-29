@@ -1,9 +1,11 @@
-import React,{useState} from "react";
+import React,{useState,useEffect} from "react";
 import { View, TouchableOpacity, Image } from 'react-native';
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {connect} from 'react-redux';
 import { TrendingStackNavigator,DiscoverMoviesStack,DiscoverSeriesStack,DiscoverPeopleStack, LoginStack, ProfileStack } from './StackNavigator';
 import CustomSidebarMenu from './CostomSideBarMenu';
+import * as actions from '../actions';
 
 const Drawer = createDrawerNavigator();
 
@@ -31,34 +33,20 @@ export const NavigationDrawerStructure = (props) => {
   );
 };
 
-const DrawerNavigator = () => {
-  const [user,setUser] = useState(null);
-  const retrieveData = async () =>{
-    try {
-      const jsonValue = await AsyncStorage.getItem('session');
-      if(jsonValue != null){
-      //  console.log(jsonValue);
-        setUser(JSON.parse(jsonValue));
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  retrieveData();
+const DrawerNavigator = (props) => {
+
+  const {user} = props;
+  props.retriveUserData();
   return (
     <Drawer.Navigator
       drawerContentOptions={{
         activeTintColor: '#e91e63',
-        itemStyle: { marginVertical: 5 },
-        user:user
+        itemStyle: { marginVertical: 5 }
       }}
       drawerContent={(props) => <CustomSidebarMenu {...props}  />} initialRouteName='Trending'>
       
       {
-      user == null? (
-        <Drawer.Screen name="Login" component= {LoginStack}/>
-
-      ):<Drawer.Screen name="Profile" component= {ProfileStack}/>
+      user.name == ''? (<Drawer.Screen name="Login" component= {LoginStack}/>):(<Drawer.Screen name="Profile" component= {ProfileStack}/>)
       }
       <Drawer.Screen name="Trending" component={TrendingStackNavigator} />
       <Drawer.Screen name="Discover Movies" component={DiscoverMoviesStack} />
@@ -67,5 +55,9 @@ const DrawerNavigator = () => {
     </Drawer.Navigator>
   );
 }
-
-export default DrawerNavigator;
+const mapStateToProps = state =>{
+  return {
+    user:state.user
+  }
+}
+export default connect(mapStateToProps,actions)(DrawerNavigator);

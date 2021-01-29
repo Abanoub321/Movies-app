@@ -9,56 +9,33 @@ import {
     ActivityIndicator,
     RefreshControl
 } from 'react-native';
+import {connect} from 'react-redux';
+import {fetchEpisodeData} from '../actions';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
 import { RenderExternalIDS } from '../Components/LinkerComponent';
 import { apiKey, baseUrl } from '../../Env';
 import { posterImage, Title, detailsHeader, centerdAboveDetail, buttons, rowDetail,buttonText } from '../styles';
 
-const EpisodeScreen = ({ route, navigation }) => {
+const EpisodeScreen = (props) => {
+    const { route, navigation , fetchEpisodeData,episode,cast,guest,images,externalIds,videos,errors} = props;
     const { id, seasonNo, episodeNo, poster } = route.params;
-    const [episode, setEpisode] = useState([]);
-    const [cast, setCast] = useState([]);
-    const [guest, setGuest] = useState([]);
-    const [images, setImages] = useState([]);
     const [fetched, setFetched] = useState(false);
     const [castBPressed, setCastBPressed] = useState(false);
-    const [externalIds, setExternalIds] = useState({});
-    const [videos, setVideos] = useState([]);
     const [guestBPressed, setGuestBPressed] = useState(false);
     const [imageBPressed, setImageBPressed] = useState(false)
     useEffect(() => {
-        setFetched(false);
         if (!fetched)
-            fetchEpisodeData();
-        setFetched(true);
+            fetchEpisodeData(id,seasonNo,episodeNo);
+        setTimeout(()=>{
+            if(errors == '')
+                setFetched(true);
+        },1500);
     });
     const onRefresh = () => {
         setFetched(false);
     }
-    const fetchEpisodeData = async () => {
-        let url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}/episode/${episodeNo}?api_key=${apiKey}`;
-        let response = await fetch(url);
-        let episodeData = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}/episode/${episodeNo}/credits?api_key=${apiKey}`;
-        response = await fetch(url);
-        let credits = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}/episode/${episodeNo}/images?api_key=${apiKey}`;
-        response = await fetch(url);
-        let images = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}/episode/${episodeNo}/external_ids?api_key=${apiKey}`;
-        response = await fetch(url);
-        let seasonExternalIds = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}/episode/${episodeNo}/videos?api_key=${apiKey}`;
-        response = await fetch(url);
-        let seasonVideos = await response.json();
-        setEpisode(episodeData);
-        setCast(credits.cast);
-        setGuest(credits.guest_stars);
-        setImages(images.stills);
-        setExternalIds(seasonExternalIds);
-        setVideos(seasonVideos.results);
-    }
+   
 
     const setFalse = () => {
         setCastBPressed(false);
@@ -189,4 +166,8 @@ const EpisodeScreen = ({ route, navigation }) => {
     }
 }
 
-export default EpisodeScreen;
+const mapStateToProps = state =>{
+    return state.episode;
+}
+
+export default connect(mapStateToProps,{fetchEpisodeData})(EpisodeScreen);

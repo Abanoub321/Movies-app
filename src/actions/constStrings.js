@@ -1,0 +1,9 @@
+export const getUserAsync = 'get_user_data';
+export const deleteUserAsync = 'Delete_User_Session';
+export const getTrendings = 'GET_TRENDING';
+export const errors = 'ERROR';
+export const fetchMovieString = 'FETCH_MOVIE';
+export const fetchTvDataString = 'FETCH_TV';
+export const fetchSeasonString = 'FETCH_SEASON';
+export const fetchEpisodeString = 'FETCH_EPISODE';
+export const fetchPersonString = 'FETCH_PERSON';

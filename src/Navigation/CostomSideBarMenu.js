@@ -1,4 +1,5 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import {
   SafeAreaView,
   StyleSheet,
@@ -12,7 +13,6 @@ import {
 } from '@react-navigation/drawer';
 
 const CustomSidebarMenu = (props) => {
-  //console.log(props.user);
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -24,7 +24,7 @@ const CustomSidebarMenu = (props) => {
         style={styles.sideMenuProfileIcon}
       />
       {
-        props.user? <Text style={{alignSelf:'center'}}>{props.user.name}</Text>:null
+        props.user != ''? <Text style={{alignSelf:'center'}}>{props.user.name}</Text>:null
       }
       <DrawerContentScrollView {...props}>
         <DrawerItemList {...props} />
@@ -53,5 +53,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
-export default CustomSidebarMenu;
+const mapStateToProps = state =>{
+ // console.log(state)
+  return {user:state.user};
+}
+export default connect(mapStateToProps)(CustomSidebarMenu);
