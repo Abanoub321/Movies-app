@@ -1,4 +1,4 @@
-import { fetchEpisodeString } from "../actions/constStrings";
+import { fetchEpisodeString, onEpisodeScreenRefresh } from "../actions/constStrings";
 
 const INITIAL_STATE = {
     episode: {},
@@ -7,14 +7,17 @@ const INITIAL_STATE = {
     images: {},
     externalIds: {},
     videos: [],
-    errors: ''
+    errors: '',
+    fetched:false
 };
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case fetchEpisodeString: {
-            return{...state,...action.payload}
+            return{...state,...action.payload,fetched:true}
         }
+        case onEpisodeScreenRefresh:
+            return {...state,fetched:false}
         default:
             return state;
     }

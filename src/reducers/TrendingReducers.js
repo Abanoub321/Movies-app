@@ -1,9 +1,10 @@
-import { getTrendings, errors } from '../actions/constStrings';
+import { getTrendings, errors,onHomeRefresh } from '../actions/constStrings';
 const INITIAL_STATE = {
     movies: [],
     tv: [],
     person: [],
-    errors: ''
+    errors: '',
+    fetched:false
 }
 export default (state = INITIAL_STATE, action) => {
 
@@ -13,13 +14,16 @@ export default (state = INITIAL_STATE, action) => {
                 const { moviesData, tvData, personData } = action.payload;
                 return {
                     ...state,
-                    movies: moviesData.results,
-                    tv: tvData.results,
-                    person: personData.results
+                    movies: moviesData,
+                    tv: tvData,
+                    person: personData,
+                    fetched:true
                 }
             }
         case errors :
             return {...state,errors:action.payload}
+        case onHomeRefresh:
+            return {...state,fetched:false}
         default:
             return state;
     }

@@ -10,18 +10,34 @@ import {
     TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import { fetchTvData } from '../actions';
+import { fetchTvData, onPageRefersh } from '../actions';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
 import { RenderExternalIDS } from '../Components/LinkerComponent';
 import { baseUrl } from '../../Env';
 import { backgroundImage, Title, buttons, overView, rowDetail, detailsHeader, centerdAboveDetail, genreContainer, buttonText } from '../styles';
+import { onTvScreenRefresh } from '../actions/constStrings';
 
 
 
 const TvScreen = (props) => {
-    const { route, navigation, tv, credits, externalIds, images, similar, videos, errors,fetchTvData } = props;
-    const [fetched, setFetched] = useState(false);
+    const {
+        route,
+        navigation,
+        tv,
+        credits,
+        externalIds,
+        images,
+        similar,
+        videos,
+        errors,
+        fetchTvData,
+        id,
+        session_id,
+        fetched,
+        onPageRefersh
+    } = props;
+
     const [imageBPressed, setImageBPressed] = useState(false);
     const [seasonBPressed, setSeasonBPressed] = useState(false);
     const [castBPressed, setCastBPressed] = useState(false);
@@ -30,11 +46,11 @@ const TvScreen = (props) => {
 
     useEffect(() => {
         if (!fetched)
-            fetchTvData(route.params.id);
-        setTimeout(() => {
-            if (errors == '')
-                setFetched(true);
-        },1500)
+            fetchTvData(route.params.id, id, session_id);
+        navigation.addListener('focus', (e) => {
+
+            onPageRefersh(onTvScreenRefresh, false);
+        })
     }, [fetched])
 
 
@@ -47,7 +63,7 @@ const TvScreen = (props) => {
         )
     }
     const onRefresh = () => {
-        setFetched(false);
+        onPageRefersh(onTvScreenRefresh,false)
     }
 
     const setFalse = () => {
@@ -340,7 +356,9 @@ const TvScreen = (props) => {
 }
 
 const mapStateToProps = state => {
-    return state.tv;
+    const tv = state.tv;
+    const { id, session_id } = state.user;
+    return { ...tv, id, session_id };
 }
 
-export default connect(mapStateToProps, {fetchTvData })(TvScreen);
+export default connect(mapStateToProps, { fetchTvData,onPageRefersh })(TvScreen);

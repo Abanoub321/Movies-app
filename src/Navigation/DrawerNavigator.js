@@ -1,9 +1,10 @@
-import React,{useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { View, TouchableOpacity, Image } from 'react-native';
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {connect} from 'react-redux';
-import { TrendingStackNavigator,DiscoverMoviesStack,DiscoverSeriesStack,DiscoverPeopleStack, LoginStack, ProfileStack } from './StackNavigator';
+import { connect } from 'react-redux';
+
+import { TrendingStackNavigator, DiscoverMoviesStack, DiscoverSeriesStack, DiscoverPeopleStack, LoginStack, ProfileStack ,WatchListStackNavigator} from './StackNavigator';
 import CustomSidebarMenu from './CostomSideBarMenu';
 import * as actions from '../actions';
 
@@ -11,7 +12,7 @@ const Drawer = createDrawerNavigator();
 
 export const NavigationDrawerStructure = (props) => {
   //Structure for the navigatin Drawer
-  
+
   const toggleDrawer = () => {
     //Props to open/close the drawer
     props.navigationProps.toggleDrawer();
@@ -35,7 +36,7 @@ export const NavigationDrawerStructure = (props) => {
 
 const DrawerNavigator = (props) => {
 
-  const {user} = props;
+  const { user } = props;
   props.retriveUserData();
   return (
     <Drawer.Navigator
@@ -43,21 +44,26 @@ const DrawerNavigator = (props) => {
         activeTintColor: '#e91e63',
         itemStyle: { marginVertical: 5 }
       }}
-      drawerContent={(props) => <CustomSidebarMenu {...props}  />} initialRouteName='Trending'>
-      
+      drawerContent={(props) => <CustomSidebarMenu {...props} />} initialRouteName='Trending'>
+
       {
-      user.name == ''? (<Drawer.Screen name="Login" component= {LoginStack}/>):(<Drawer.Screen name="Profile" component= {ProfileStack}/>)
+        user.name == '' ? (<Drawer.Screen name="Login" component={LoginStack} />) : (<Drawer.Screen name="Profile" component={ProfileStack} />)
       }
       <Drawer.Screen name="Trending" component={TrendingStackNavigator} />
       <Drawer.Screen name="Discover Movies" component={DiscoverMoviesStack} />
       <Drawer.Screen name="Discover Series" component={DiscoverSeriesStack} />
       <Drawer.Screen name="Discover People" component={DiscoverPeopleStack} />
+      {
+        user.type == 'user' ? (
+          <Drawer.Screen name='WatchList' component={WatchListStackNavigator} />
+        ) : null
+      }
     </Drawer.Navigator>
   );
 }
-const mapStateToProps = state =>{
+const mapStateToProps = state => {
   return {
-    user:state.user
+    user: state.user
   }
 }
-export default connect(mapStateToProps,actions)(DrawerNavigator);
+export default connect(mapStateToProps, actions)(DrawerNavigator);

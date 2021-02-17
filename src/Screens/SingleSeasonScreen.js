@@ -12,17 +12,17 @@ import {
     TouchableOpacity
 } from 'react-native';
 import {connect} from 'react-redux'
-import {fetchSeasonData} from '../actions';
+import {fetchSeasonData,onPageRefersh} from '../actions';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
 import { RenderExternalIDS } from '../Components/LinkerComponent';
 import {  baseUrl } from '../../Env';
+import {onSeasonScreenRefresh} from '../actions/constStrings'
 import { Title, overView, rowDetail, detailsHeader, buttons, centerdAboveDetail , buttonText} from '../styles';
 
 const SeasonScreen = (props) => {
-    const { route, navigation,fetchSeasonData ,season,cast,images,externalIds,videos,errors} = props;
+    const { route, navigation,fetchSeasonData ,season,cast,images,externalIds,videos,errors,fetched,onPageRefersh} = props;
     const { id, seasonNo } = route.params;
-    const [fetched, setFetched] = useState(false);
     const [episodeBPressed, setEpisodeBPressed] = useState(false);
     const [castBPressed, setCastBPressed] = useState(false);
     const [imageBPressed, setImageBPressed] = useState(false)
@@ -31,14 +31,13 @@ const SeasonScreen = (props) => {
         
         if (!fetched)
             fetchSeasonData(id,seasonNo);
-        setTimeout(()=>{
-            if(errors == '')
-                setFetched(true);
-        },1500)
+            navigation.addListener('focus', (e) => {
+                onPageRefersh(onSeasonScreenRefresh,false);
+            })
     }, [fetched])
    
     const onRefresh = () => {
-        setFetched(false);
+        onPageRefersh(onSeasonScreenRefresh,false);
     }
 
     const setFalse = () => {
@@ -196,4 +195,4 @@ const styles = StyleSheet.create({
 const mapStateToProps = state =>{
     return state.season;
 }
-export default connect(mapStateToProps,{fetchSeasonData})(SeasonScreen);
+export default connect(mapStateToProps,{fetchSeasonData,onPageRefersh})(SeasonScreen);

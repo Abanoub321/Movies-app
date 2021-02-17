@@ -6,6 +6,7 @@ import tv from './TvReducer';
 import season from './SeasonReducer';
 import episode from './EpisodeReducer';
 import person from './PersonReducer';
+import WatchList from './WatchListReducer';
 export default combineReducers({
     user : userReducer,
     Trending: trendingReducer,
@@ -13,5 +14,6 @@ export default combineReducers({
     tv,
     season,
     episode,
-    person
+    person,
+    WatchList
 });

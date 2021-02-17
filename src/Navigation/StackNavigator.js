@@ -12,6 +12,8 @@ import DiscoverSeries from '../Screens/DiscoverSeriesScreen';
 import DiscoverPeople from '../Screens/DiscoverPeopleScreen';
 import LoginScreen from '../Screens/loginScreen';
 import ProfileScreen from '../Screens/ProfileScreen';
+import FavoriteComponent from "../Components/FavoriteComponent";
+import WatchListTopTab from './WatchListTopTab';
 const Stack = createStackNavigator();
 
 const screenOptionStyle = {
@@ -40,9 +42,32 @@ const TrendingStackNavigator = ({ navigation }) => {
         headerTitleStyle: {
           fontWeight: 'bold', //Set Header text style
         },
-      }} />
-      <Stack.Screen name="Movie" component={MovieScreen} />
-      <Stack.Screen name="Series" component={TvScreen} />
+      }}
+
+      />
+      <Stack.Screen name="Movie"
+
+        options={{
+          
+
+          headerRight: () => (
+            <FavoriteComponent type='movie' />
+          )
+          
+
+
+        }}
+        
+        component={MovieScreen} />
+      <Stack.Screen name="Series"
+        options={{
+          headerRight: () => (
+            <FavoriteComponent type='tv' />
+          )
+
+
+        }}
+        component={TvScreen} />
       <Stack.Screen name="Season" component={SeasonScreen} />
       <Stack.Screen name="Episode" component={EpisodeScreen} />
       <Stack.Screen name="Person" component={PersonScreen} />
@@ -68,8 +93,26 @@ const DiscoverMoviesStack = ({ navigation }) => {
           fontWeight: 'bold', //Set Header text style
         },
       }} />
-      <Stack.Screen name="Movie" component={MovieScreen} />
-      <Stack.Screen name="Series" component={TvScreen} />
+      <Stack.Screen name="Movie"
+        options={{
+
+
+          headerRight: () => (
+            <FavoriteComponent type='movie' />
+          )
+
+
+        }}
+        component={MovieScreen} />
+      <Stack.Screen name="Series"
+        options={{
+          headerRight: () => (
+            <FavoriteComponent type='tv' />
+          )
+
+
+        }}
+        component={TvScreen} />
       <Stack.Screen name="Season" component={SeasonScreen} />
       <Stack.Screen name="Episode" component={EpisodeScreen} />
       <Stack.Screen name="Person" component={PersonScreen} />
@@ -94,9 +137,30 @@ const DiscoverSeriesStack = ({ navigation }) => {
         headerTitleStyle: {
           fontWeight: 'bold', //Set Header text style
         },
-      }} />
-      <Stack.Screen name="Series" component={TvScreen} />
-      <Stack.Screen name="Movie" component={MovieScreen} />
+
+      }}
+
+      />
+      <Stack.Screen name="Series"
+        options={{
+          headerRight: () => (
+            <FavoriteComponent type='tv' />
+          )
+
+
+        }}
+        component={TvScreen} />
+      <Stack.Screen name="Movie"
+        options={{
+
+
+          headerRight: () => (
+            <FavoriteComponent type='movie' />
+          )
+
+
+        }}
+        component={MovieScreen} />
       <Stack.Screen name="Season" component={SeasonScreen} />
       <Stack.Screen name="Episode" component={EpisodeScreen} />
       <Stack.Screen name="Person" component={PersonScreen} />
@@ -123,8 +187,27 @@ const DiscoverPeopleStack = ({ navigation }) => {
           fontWeight: 'bold', //Set Header text style
         },
       }} />
-      <Stack.Screen name="Series" component={TvScreen} />
-      <Stack.Screen name="Movie" component={MovieScreen} />
+      <Stack.Screen name="Series"
+
+        options={{
+          headerRight: () => (
+            <FavoriteComponent type='tv' />
+          )
+
+
+        }}
+        component={TvScreen} />
+      <Stack.Screen name="Movie"
+        options={{
+
+
+          headerRight: () => (
+            <FavoriteComponent type='movie' />
+          )
+
+
+        }}
+        component={MovieScreen} />
       <Stack.Screen name="Season" component={SeasonScreen} />
       <Stack.Screen name="Episode" component={EpisodeScreen} />
       <Stack.Screen name="Person" component={PersonScreen} />
@@ -132,7 +215,7 @@ const DiscoverPeopleStack = ({ navigation }) => {
   );
 }
 
-const LoginStack = ({ navigation }) =>{
+const LoginStack = ({ navigation }) => {
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
       <Stack.Screen name="Discover People" component={LoginScreen} options={{
@@ -141,6 +224,7 @@ const LoginStack = ({ navigation }) =>{
           <NavigationDrawerStructure
             navigationProps={navigation}
           />
+
         ),
         headerStyle: {
           backgroundColor: '#f4511e', //Set Header color
@@ -153,7 +237,7 @@ const LoginStack = ({ navigation }) =>{
     </Stack.Navigator>
   );
 }
-const ProfileStack = ({ navigation }) =>{
+const ProfileStack = ({ navigation }) => {
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
       <Stack.Screen name="Profile" component={ProfileScreen} options={{
@@ -174,4 +258,46 @@ const ProfileStack = ({ navigation }) =>{
     </Stack.Navigator>
   );
 }
-export { TrendingStackNavigator,DiscoverMoviesStack,DiscoverSeriesStack,DiscoverPeopleStack,LoginStack ,ProfileStack};
+
+const WatchListStackNavigator = ({ navigation }) => {
+  return (
+    <Stack.Navigator screenOptions={screenOptionStyle}>
+      <Stack.Screen name="WatchList" component={WatchListTopTab} options={{
+
+        headerLeft: () => (
+          <NavigationDrawerStructure
+            navigationProps={navigation}
+          />
+        ),
+        headerStyle: {
+          backgroundColor: '#f4511e', //Set Header color
+        },
+        headerTintColor: '#fff', //Set Header text color
+        headerTitleStyle: {
+          fontWeight: 'bold', //Set Header text style
+        },
+      }} />
+      <Stack.Screen name="Series"
+
+        options={{
+          headerRight: () => (
+            <FavoriteComponent type='tv' />
+          )
+
+
+        }}
+        component={TvScreen} />
+      <Stack.Screen name="Movie"
+        options={{
+          headerRight: () => (
+            <FavoriteComponent type='movie' />
+          )
+        }}
+        component={MovieScreen} />
+      <Stack.Screen name="Season" component={SeasonScreen} />
+      <Stack.Screen name="Episode" component={EpisodeScreen} />
+      <Stack.Screen name="Person" component={PersonScreen} />
+    </Stack.Navigator>
+  );
+}
+export { TrendingStackNavigator, DiscoverMoviesStack, DiscoverSeriesStack, DiscoverPeopleStack, LoginStack, ProfileStack, WatchListStackNavigator };

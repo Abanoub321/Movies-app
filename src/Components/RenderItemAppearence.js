@@ -1,6 +1,5 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import { useState } from "react/cjs/react.development";
 import { pure } from 'recompose';
 import { baseUrl } from '../../Env';
 
@@ -10,7 +9,7 @@ const RenderItemAppearence = ({ item, navigation }) => {
 
   const onPress = () => {
     if (item.itemType == "movie" && item.itemType != item.previosState) {
-
+     
       navigation.navigate('Movie', {
         id: item.itemId,
         name: item.itemName
@@ -49,6 +48,7 @@ const RenderItemAppearence = ({ item, navigation }) => {
     }
     else if (item.itemType == item.previosState) {
       if (item.itemType == 'movie') {
+  
         navigation.push('Movie', {
           id: item.itemId,
           name: item.itemName

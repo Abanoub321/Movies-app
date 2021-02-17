@@ -9,33 +9,32 @@ import {
     ActivityIndicator,
     RefreshControl
 } from 'react-native';
-import {connect} from 'react-redux';
-import {fetchEpisodeData} from '../actions';
+import { connect } from 'react-redux';
+import { fetchEpisodeData, onPageRefersh } from '../actions';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
 import { RenderExternalIDS } from '../Components/LinkerComponent';
 import { apiKey, baseUrl } from '../../Env';
-import { posterImage, Title, detailsHeader, centerdAboveDetail, buttons, rowDetail,buttonText } from '../styles';
+import { posterImage, Title, detailsHeader, centerdAboveDetail, buttons, rowDetail, buttonText } from '../styles';
+import { onEpisodeScreenRefresh } from '../actions/constStrings';
 
 const EpisodeScreen = (props) => {
-    const { route, navigation , fetchEpisodeData,episode,cast,guest,images,externalIds,videos,errors} = props;
+    const { route, navigation, fetchEpisodeData, episode, cast, guest, images, externalIds, videos, errors, onPageRefersh, fetched } = props;
     const { id, seasonNo, episodeNo, poster } = route.params;
-    const [fetched, setFetched] = useState(false);
     const [castBPressed, setCastBPressed] = useState(false);
     const [guestBPressed, setGuestBPressed] = useState(false);
     const [imageBPressed, setImageBPressed] = useState(false)
     useEffect(() => {
         if (!fetched)
-            fetchEpisodeData(id,seasonNo,episodeNo);
-        setTimeout(()=>{
-            if(errors == '')
-                setFetched(true);
-        },1500);
+            fetchEpisodeData(id, seasonNo, episodeNo);
+        navigation.addListener('focus', (e) => {
+            onPageRefersh(onEpisodeScreenRefresh, false);
+        })
     });
     const onRefresh = () => {
-        setFetched(false);
+        onPageRefersh(onEpisodeScreenRefresh, false)
     }
-   
+
 
     const setFalse = () => {
         setCastBPressed(false);
@@ -166,8 +165,8 @@ const EpisodeScreen = (props) => {
     }
 }
 
-const mapStateToProps = state =>{
+const mapStateToProps = state => {
     return state.episode;
 }
 
-export default connect(mapStateToProps,{fetchEpisodeData})(EpisodeScreen);
+export default connect(mapStateToProps, { fetchEpisodeData, onPageRefersh })(EpisodeScreen);

@@ -1,9 +1,12 @@
 
-import {getUserAsync,deleteUserAsync} from '../actions/constStrings'
+import {getUserAsync,deleteUserAsync, getTokenString, addUser, addGuest} from '../actions/constStrings'
 const INITIAL_STATE ={
     name: '',
     type:'',
-    id:''
+    id:'',
+    error:'',
+    session_id:'',
+    token:''
 }
 export default (state = INITIAL_STATE,action)=>{
 
@@ -12,6 +15,12 @@ export default (state = INITIAL_STATE,action)=>{
            return action.payload;
         case deleteUserAsync:
             return INITIAL_STATE;
+        case getTokenString:
+            return {...state,token:action.payload};
+        case addUser:
+            return action.payload;
+        case addGuest:
+            return action.payload;
        default:
            return state;
    }

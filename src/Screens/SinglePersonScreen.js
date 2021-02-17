@@ -1,33 +1,33 @@
 
 import React, { useEffect, useState } from 'react';
-import {connect} from 'react-redux';
-import {fetchPersonData} from '../actions';
+import { connect } from 'react-redux';
+import { fetchPersonData ,onPageRefersh} from '../actions';
 import { View, Text, ScrollView, Image, ActivityIndicator, RefreshControl, FlatList, TouchableOpacity } from 'react-native';
 
 import { RenderExternalIDS } from '../Components/LinkerComponent';
 import { baseUrl } from '../../Env';
-import { posterImage, Title, overView, rowDetail, detailsHeader, centerdAboveDetail, buttons,buttonText } from '../styles';
+import { posterImage, Title, overView, rowDetail, detailsHeader, centerdAboveDetail, buttons, buttonText } from '../styles';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
+import { onPersonScreenRefresh } from '../actions/constStrings';
 const PersonScreen = (props) => {
-    const { route, navigation ,fetchPersonData,person,credits,externalIds,images,errors} = props;
+    const { route, navigation, fetchPersonData, person, credits, externalIds, images, errors ,fetched,onPageRefersh} = props;
     const { id } = route.params;
-    const [fetched, setFetched] = useState(false);
     const [imageBPressed, setImageBPressed] = useState(false);
     const [castBPressed, setCastBPressed] = useState(false);
     const [crewBPressed, setCrewBPressed] = useState(false);
     useEffect(() => {
         if (!fetched)
             fetchPersonData(id);
-        setTimeout(()=>{
-            if(errors == '')
-                setFetched(true);
-        },1500)
+        navigation.addListener('focus', (e) => {
+
+            onPageRefersh(onPersonScreenRefresh, false);
+        })
     }, [fetched])
 
 
     const onRefresh = () => {
-        setFetched(false);
+        onPageRefersh(onPersonScreenRefresh, false);
     }
     const setFalse = () => {
         setCastBPressed(false);
@@ -169,11 +169,11 @@ const PersonScreen = (props) => {
                                 />)
                     ) : null
                 }
-               
+
                 {
                     imageBPressed ? <RenderImages images={images.profiles} /> : null
                 }
-               
+
             </ScrollView>
         );
     }
@@ -186,8 +186,8 @@ const PersonScreen = (props) => {
     }
 }
 
-const mapStateToProps = state =>{
+const mapStateToProps = state => {
     return state.person;
 }
 
-export default connect(mapStateToProps,{fetchPersonData})(PersonScreen);
+export default connect(mapStateToProps, { fetchPersonData,onPageRefersh })(PersonScreen);

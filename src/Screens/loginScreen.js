@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Linking } from 'react-native';
 import { connect } from 'react-redux';
 import { GuestLogin, UserLogin } from '../Components/LoginComponent'
-import { loginAsGuest } from '../actions';
+import { loginAsGuest, loginAsUser ,getToken} from '../actions';
 import { rowDetail, buttonText, buttons, centerdAboveDetail } from '../styles';
 import { apiKey } from '../../Env';
 const LoginScreen = (props) => {
-    const { loginAsGuest,navigation } = props;
+    const { loginAsGuest, loginAsUser, navigation, token ,getToken } = props;
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [state, setState] = useState(0);
+    const [activateState, setActivateState] = useState(false);
+
+   
+
     const onTextChange = (text) => {
         setName(text)
     }
@@ -20,39 +24,14 @@ const LoginScreen = (props) => {
         setState(1);
     }
     const viewLoginForm = () => {
+        if(state<2)
+            getToken();
         setState(2);
     }
     const onUserPress = async () => {
-
         if (name == '' || password == '')
             return;
-
-        await fetch(`https://api.themoviedb.org/3/authentication/token/new?api_key=${apiKey}`)
-            .then(response => response.json())
-            .then(async (jsonResponse) => {
-                if (jsonResponse.success) {
-                    console.log(jsonResponse.request_token);
-                    await fetch(`https://api.themoviedb.org/3/authentication/token/validate_with_login?api_key=${apiKey}`, {
-                        method: 'POST',
-                        body: {
-                            username: name,
-                            password,
-                            request_token: jsonResponse.request_token
-                        }
-                    })
-                        .then(response => response.json())
-                        .then(jsonResponse2 => {
-                            console.log(jsonResponse2)
-                            if (jsonResponse2.success) {
-                                console.log(jsonResponse2);
-                            }
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        })
-
-                }
-            })
+        loginAsUser(name,token);
     }
 
     const onGuestPressed = () => {
@@ -82,13 +61,19 @@ const LoginScreen = (props) => {
                 )
             }
             {
-                state < 1 ? null : (state == 1 ? <GuestLogin onPress={onGuestPressed} onChangeText={onTextChange} /> : <UserLogin onPress={onUserPress} onChangeText={onTextChange} onChangePassword={onChangePassword} />)
+                state < 1 ? null : (state == 1 ? <GuestLogin onPress={onGuestPressed} onChangeText={onTextChange} /> : <UserLogin onPress={onUserPress} onChangeText={onTextChange} onChangePassword={onChangePassword} token={token}/>)
             }
 
         </View>
     )
 }
-
-export default connect(null, {
-    loginAsGuest
+const mapStateToProps = state => {
+ //   console.log(state.user);
+    return {token: state.user.token};
+    
+}
+export default connect(mapStateToProps, {
+    loginAsGuest,
+    loginAsUser,
+    getToken
 })(LoginScreen);

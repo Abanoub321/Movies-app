@@ -12,17 +12,32 @@ import {
     TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux'
-import { fetchMovie } from '../actions';
+import { fetchMovie, onPageRefersh } from '../actions';
 import RatingComponent from '../Components/RatingComponent';
 import { RenderExternalIDS } from '../Components/LinkerComponent';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
-import { apiKey, baseUrl } from '../../Env';
+import { baseUrl } from '../../Env';
 import { detailsHeader, overView, genreContainer, rowDetail, centerdAboveDetail, buttons, buttonText } from '../styles';
+import { onMovieScreenRefresh } from '../actions/constStrings';
 const MovieScreen = (props) => {
-    const { route, navigation, fetchMovie, movie, credits, externalIds, images, similarMovies, videos, errors } = props;
+    const {
+        route,
+        navigation,
+        fetchMovie,
+        movie,
+        credits,
+        externalIds,
+        images,
+        similarMovies,
+        videos,
+        errors,
+        id,
+        session_id,
+        fetched,
+        onPageRefersh
+    } = props;
 
-    const [fetched, setFetched] = useState(false);
 
     const [rating, setRating] = useState('');
 
@@ -30,14 +45,7 @@ const MovieScreen = (props) => {
     const [similarBPressed, setSimilarBPressed] = useState(false);
     const [castBPressed, setCastBPressed] = useState(false);
     const [companiesBPressed, setCompaniesBPressed] = useState(false);
-    useEffect(() => {
-        if (!fetched)
-            fetchMovie(route.params.id);
-        setTimeout(() => {
-            if (errors == '')
-                setFetched(true);
-        }, 1500)
-    }, [fetched])
+    
 
     const rate = (rating) => {
         setRating(rating)
@@ -51,9 +59,7 @@ const MovieScreen = (props) => {
             </View>
         )
     }
-    const onRefresh = () => {
-        setFetched(false);
-    }
+
 
 
     const setFalse = () => {
@@ -80,8 +86,20 @@ const MovieScreen = (props) => {
         setCompaniesBPressed(!companiesBPressed);
     }
 
+    const onRefersh = () => {
+        onPageRefersh(onMovieScreenRefresh, false);
+    }
+    useEffect(() => {
+        if (!fetched)
+            fetchMovie(route.params.id, id, session_id);
+       
+         navigation.addListener('focus',(e)=>{
+          
+            onPageRefersh(onMovieScreenRefresh, false);
+        })
+        
+    }, [fetched])
 
-    
     if (!fetched) {
         return (
             <View>
@@ -93,7 +111,7 @@ const MovieScreen = (props) => {
         return (
             <ScrollView
                 refreshControl={
-                    <RefreshControl refreshing={!fetched} onRefresh={onRefresh} />
+                    <RefreshControl refreshing={!fetched} onRefresh={onRefersh} />
                 }
             >
 
@@ -152,6 +170,7 @@ const MovieScreen = (props) => {
                             }
                             <RatingComponent onPress={rate} />
                         </View>
+
 
                         <View>
                             <Text style={overView}>
@@ -319,6 +338,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-    return state.Movie;
+    const movie = state.Movie;
+    const { id, session_id } = state.user;
+    return { ...movie, id, session_id };
 }
-export default connect(mapStateToProps, { fetchMovie })(MovieScreen);
+export default connect(mapStateToProps, { fetchMovie, onPageRefersh })(MovieScreen);

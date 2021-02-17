@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Linking } from 'react-native';
+import { useState } from 'react/cjs/react.development';
 import { rowDetail, buttons, buttonText } from '../styles';
 
 const GuestLogin = ({ onPress, onChangeText }) => {
@@ -33,55 +34,80 @@ const GuestLogin = ({ onPress, onChangeText }) => {
     )
 }
 
-const UserLogin = ({ onPress, onChangeText, onChangePassword }) => {
+const UserLogin = ({ onPress, onChangeText, onChangePassword, token }) => {
+    const [activate, setActivate] = useState(false);
+    const activateBtn = () => {
+        console.log(token);
+        Linking.openURL(`https://www.themoviedb.org/authenticate/${token}`);
+        setTimeout(
+            () => {
+                setActivate(true)
+            }
+            , 10000
+        )
+    }
     return (
-        <View>
-            <View
-                style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: '#fff',
-                    borderWidth: .5,
-                    borderColor: '#000',
-                    height: 40,
-                    borderRadius: 5,
-                    margin: 10
-                }}
-            >
-                <TextInput
-                    placeholder='Enter Name'
-                    style={{ flex: 1 }}
-                    underlineColorAndroid="transparent"
-                    onChangeText={onChangeText}
-                />
+        !activate ?
+            (
+                <View>
+                    <Text>
+                        You should activate your token first
+                    </Text>
+                    <TouchableOpacity onPress={activateBtn} style={[buttons, { alignSelf: 'center' }]}>
+                        <Text style={buttonText}> Activate Token to log in </Text>
+                    </TouchableOpacity>
+                </View>
+            ) :
+            (
+                <View>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: '#fff',
+                            borderWidth: .5,
+                            borderColor: '#000',
+                            height: 40,
+                            borderRadius: 5,
+                            margin: 10
+                        }}
+                    >
+                        <TextInput
+                            placeholder='Enter Name'
+                            style={{ flex: 1 }}
+                            underlineColorAndroid="transparent"
+                            onChangeText={onChangeText}
+                        />
 
 
 
-            </View>
-            <View style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: '#fff',
-                borderWidth: .5,
-                borderColor: '#000',
-                height: 40,
-                borderRadius: 5,
-                margin: 10
-            }}>
-                <TextInput
-                    placeholder='Enter password'
-                    style={{ flex: 1 }}
-                    underlineColorAndroid="transparent"
-                    onChangeText={onChangePassword}
-                    secureTextEntry
-                />
-            </View>
-            <TouchableOpacity onPress={onPress} style={[buttons, { alignSelf: 'center' }]}>
-                <Text style={buttonText}> Sign In as user </Text>
-            </TouchableOpacity>
-        </View>
+                    </View >
+                    <View style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: '#fff',
+                        borderWidth: .5,
+                        borderColor: '#000',
+                        height: 40,
+                        borderRadius: 5,
+                        margin: 10
+                    }}>
+                        <TextInput
+                            placeholder='Enter password'
+                            style={{ flex: 1 }}
+                            underlineColorAndroid="transparent"
+                            onChangeText={onChangePassword}
+                            secureTextEntry
+                        />
+                    </View>
+                    <TouchableOpacity onPress={onPress} style={[buttons, { alignSelf: 'center' }]}>
+                        <Text style={buttonText}> Sign In as user </Text>
+                    </TouchableOpacity>
+                </View >
+
+            )
     )
 }
 
