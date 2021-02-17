@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { pure } from 'recompose';
-import { baseUrl } from '../../Env';
+import { BASE_URL } from '@env';
 
 
 
@@ -30,12 +30,13 @@ const RenderItemAppearence = ({ item, navigation }) => {
       })
     }
     else if (item.itemType == 'episode' && item.itemType != item.previosState) {
-
+     
       navigation.navigate('Episode', {
         id: item.itemId,
         seasonNo: item.itemSeason,
         episodeNo: item.itemEpisode,
-        name: item.itemName
+        name: item.itemName,
+        poster:item.itemPoster
       })
     }
     else if (item.itemType == "person" && item.itemType != item.previosState) {
@@ -70,12 +71,13 @@ const RenderItemAppearence = ({ item, navigation }) => {
         })
       }
       else if (item.itemType == 'episode' ) {
-
+        
         navigation.push('Episode', {
           id: item.itemId,
           seasonNo: item.itemSeason,
           episodeNo: item.itemEpisode,
-          name: item.itemName
+          name: item.itemName,
+          poster:item.itemPoster
         })
       }
       else if (item.itemType == "person" ) {
@@ -101,7 +103,7 @@ const RenderItemAppearence = ({ item, navigation }) => {
       return (
         <Image
           style={styles.image}
-          source={{ uri: baseUrl + item.itemPoster }}
+          source={{ uri: BASE_URL + item.itemPoster }}
         />
       );
     }

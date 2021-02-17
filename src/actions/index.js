@@ -18,7 +18,7 @@ import {
     changeListMovie,
     changeListTV
 } from './constStrings';
-import { apiKey } from '../../Env';
+import { API_KEY } from '@env';
 
 
 export const retriveUserData = () => {
@@ -40,7 +40,7 @@ export const retriveUserData = () => {
 
 export const loginAsGuest = (name) => {
     return async (dispatch) => {
-        await fetch(`https://api.themoviedb.org/3/authentication/guest_session/new?api_key=${apiKey}`)
+        await fetch(`https://api.themoviedb.org/3/authentication/guest_session/new?api_key=${API_KEY}`)
             .then(response => response.json())
             .then(async (responseJson) => {
                 if (responseJson.success) {
@@ -68,7 +68,7 @@ export const loginAsGuest = (name) => {
 
 export const getToken = () => {
     return async (dispatch) => {
-        const result = await fetch(`https://api.themoviedb.org/3/authentication/token/new?api_key=${apiKey}`)
+        const result = await fetch(`https://api.themoviedb.org/3/authentication/token/new?api_key=${API_KEY}`)
             .then(response => response.json());
         if (result.success) {
             const token = result.request_token;
@@ -85,7 +85,7 @@ export const loginAsUser = (name, token) => {
 
     return async (dispatch) => {
         console.log(token)
-        const result = await fetch(`https://api.themoviedb.org/3/authentication/session/new?api_key=${apiKey}`, {
+        const result = await fetch(`https://api.themoviedb.org/3/authentication/session/new?api_key=${API_KEY}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -96,7 +96,7 @@ export const loginAsUser = (name, token) => {
         })
             .then(response => response.json());
         if (result.success) {
-            const result2 = await fetch(`https://api.themoviedb.org/3/account?api_key=${apiKey}&session_id=${result.session_id}`)
+            const result2 = await fetch(`https://api.themoviedb.org/3/account?api_key=${API_KEY}&session_id=${result.session_id}`)
                 .then(response => response.json());
             console.log(result2);
             try {
@@ -142,7 +142,7 @@ export const removeSession = () => {
 
 export const fetchTrendingData = () => {
     return async (dispatch) => {
-        let url = `https://api.themoviedb.org/3/trending/movie/day?api_key=${apiKey}`;
+        let url = `https://api.themoviedb.org/3/trending/movie/day?api_key=${API_KEY}`;
         moviesData = await fetch(url)
             .then(response => response.json())
             .catch(err => {
@@ -151,7 +151,7 @@ export const fetchTrendingData = () => {
                     payload: err
                 })
             });
-        url = `https://api.themoviedb.org/3/trending/tv/day?api_key=${apiKey}`;
+        url = `https://api.themoviedb.org/3/trending/tv/day?api_key=${API_KEY}`;
         tvData = await fetch(url)
             .then(response => response.json())
             .catch(err => {
@@ -160,7 +160,7 @@ export const fetchTrendingData = () => {
                     payload: err
                 })
             });
-        url = `https://api.themoviedb.org/3/trending/person/day?api_key=${apiKey}`;
+        url = `https://api.themoviedb.org/3/trending/person/day?api_key=${API_KEY}`;
         personData = await fetch(url)
             .then(response => response.json())
             .catch(err => {
@@ -207,25 +207,25 @@ export const fetchTrendingData = () => {
 
 export const fetchMovie = (movieId, accountId, sessionId) => {
     return async (dispatch) => {
-        let url = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}&language=en-US`;
+        let url = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}&language=en-US`;
         let response = await fetch(url);
         let movie = await response.json();
-        url = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${apiKey}&language=en-US`;
+        url = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${API_KEY}&language=en-US`;
         response = await fetch(url);
         let creditsData = await response.json();
-        url = `https://api.themoviedb.org/3/movie/${movieId}/external_ids?api_key=${apiKey}&language=en-US`;
+        url = `https://api.themoviedb.org/3/movie/${movieId}/external_ids?api_key=${API_KEY}&language=en-US`;
         response = await fetch(url);
         let externalIdsData = await response.json();
-        url = `https://api.themoviedb.org/3/movie/${movieId}/images?api_key=${apiKey}`;
+        url = `https://api.themoviedb.org/3/movie/${movieId}/images?api_key=${API_KEY}`;
         response = await fetch(url);
         let imagesData = await response.json();
-        url = `https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=${apiKey}&page=1`;
+        url = `https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=${API_KEY}&page=1`;
         response = await fetch(url);
         let similarMoviesData = await response.json();
-        url = `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${apiKey}`;
+        url = `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${API_KEY}`;
         response = await fetch(url);
         let videosData = await response.json();
-        response = await fetch(`https://api.themoviedb.org/3/account/${accountId}/watchlist/movies?api_key=${apiKey}&session_id=${sessionId}`)
+        response = await fetch(`https://api.themoviedb.org/3/account/${accountId}/watchlist/movies?api_key=${API_KEY}&session_id=${sessionId}`)
             .then(response => response.json())
 
         let watchList = response.results.filter((result) => result.id == movie.id);
@@ -252,25 +252,25 @@ export const fetchMovie = (movieId, accountId, sessionId) => {
 
 export const fetchTvData = (tvId, accountId, sessionId) => {
     return async (dispatch) => {
-        let url = `https://api.themoviedb.org/3/tv/${tvId}?api_key=${apiKey}&language=en-US`;
+        let url = `https://api.themoviedb.org/3/tv/${tvId}?api_key=${API_KEY}&language=en-US`;
         let response = await fetch(url);
         let tv = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${tvId}/credits?api_key=${apiKey}&language=en-US`;
+        url = `https://api.themoviedb.org/3/tv/${tvId}/credits?api_key=${API_KEY}&language=en-US`;
         response = await fetch(url);
         let tvCreditsData = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${tvId}/external_ids?api_key=${apiKey}&language=en-US`;
+        url = `https://api.themoviedb.org/3/tv/${tvId}/external_ids?api_key=${API_KEY}&language=en-US`;
         response = await fetch(url);
         let tvExternalIds = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${tvId}/videos?api_key=${apiKey}&language=en-US`;
+        url = `https://api.themoviedb.org/3/tv/${tvId}/videos?api_key=${API_KEY}&language=en-US`;
         response = await fetch(url);
         let tvVideos = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${tvId}/images?api_key=${apiKey}`;
+        url = `https://api.themoviedb.org/3/tv/${tvId}/images?api_key=${API_KEY}`;
         response = await fetch(url);
         let tvImages = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${tvId}/similar?api_key=${apiKey}`;
+        url = `https://api.themoviedb.org/3/tv/${tvId}/similar?api_key=${API_KEY}`;
         response = await fetch(url);
         let tvSimilar = await response.json();
-        response = await fetch(`https://api.themoviedb.org/3/account/${accountId}/watchlist/tv?api_key=${apiKey}&session_id=${sessionId}`)
+        response = await fetch(`https://api.themoviedb.org/3/account/${accountId}/watchlist/tv?api_key=${API_KEY}&session_id=${sessionId}`)
             .then(response => response.json());
 
         let watchList = response.results.filter((result) => result.id == tv.id);
@@ -295,19 +295,19 @@ export const fetchTvData = (tvId, accountId, sessionId) => {
 
 export const fetchSeasonData = (tvId, seasonNo) => {
     return async (dispatch) => {
-        let url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}?api_key=${apiKey}`;
+        let url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}?api_key=${API_KEY}`;
         let response = await fetch(url);
         let season = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}/credits?api_key=${apiKey}`;
+        url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}/credits?api_key=${API_KEY}`;
         response = await fetch(url);
         let seasonCredits = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}/images?api_key=${apiKey}`;
+        url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}/images?api_key=${API_KEY}`;
         response = await fetch(url);
         let seasonImages = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}/external_ids?api_key=${apiKey}`;
+        url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}/external_ids?api_key=${API_KEY}`;
         response = await fetch(url);
         let seasonExternalIds = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}/videos?api_key=${apiKey}`;
+        url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}/videos?api_key=${API_KEY}`;
         response = await fetch(url);
         let seasonVideos = await response.json();
         dispatch({
@@ -326,19 +326,19 @@ export const fetchSeasonData = (tvId, seasonNo) => {
 
 export const fetchEpisodeData = (tvId, seasonNo, episodeNo) => {
     return async (dispatch) => {
-        let url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}/episode/${episodeNo}?api_key=${apiKey}`;
+        let url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}/episode/${episodeNo}?api_key=${API_KEY}`;
         let response = await fetch(url);
         let episodeData = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}/episode/${episodeNo}/credits?api_key=${apiKey}`;
+        url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}/episode/${episodeNo}/credits?api_key=${API_KEY}`;
         response = await fetch(url);
         let credits = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}/episode/${episodeNo}/images?api_key=${apiKey}`;
+        url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}/episode/${episodeNo}/images?api_key=${API_KEY}`;
         response = await fetch(url);
         let images = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}/episode/${episodeNo}/external_ids?api_key=${apiKey}`;
+        url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}/episode/${episodeNo}/external_ids?api_key=${API_KEY}`;
         response = await fetch(url);
         let seasonExternalIds = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}/episode/${episodeNo}/videos?api_key=${apiKey}`;
+        url = `https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNo}/episode/${episodeNo}/videos?api_key=${API_KEY}`;
         response = await fetch(url);
         let seasonVideos = await response.json();
         dispatch({
@@ -357,16 +357,16 @@ export const fetchEpisodeData = (tvId, seasonNo, episodeNo) => {
 
 export const fetchPersonData = (id) => {
     return async (dispatch) => {
-        let url = `https://api.themoviedb.org/3/person/${id}?api_key=${apiKey}`;
+        let url = `https://api.themoviedb.org/3/person/${id}?api_key=${API_KEY}`;
         let response = await fetch(url);
         let personData = await response.json();
-        url = `https://api.themoviedb.org/3/person/${id}/combined_credits?api_key=${apiKey}`;
+        url = `https://api.themoviedb.org/3/person/${id}/combined_credits?api_key=${API_KEY}`;
         response = await fetch(url);
         let creditsData = await response.json();
-        url = `https://api.themoviedb.org/3/person/${id}/external_ids?api_key=${apiKey}`;
+        url = `https://api.themoviedb.org/3/person/${id}/external_ids?api_key=${API_KEY}`;
         response = await fetch(url);
         let externalIdsData = await response.json();
-        url = `https://api.themoviedb.org/3/person/${id}/images?api_key=${apiKey}`;
+        url = `https://api.themoviedb.org/3/person/${id}/images?api_key=${API_KEY}`;
         response = await fetch(url);
         let imagesData = await response.json();
         dispatch({
@@ -383,7 +383,7 @@ export const fetchPersonData = (id) => {
 
 export const fetchMovieWatchList = (accountId, sessionId) => {
     return async (dispatch) => {
-        const result = await fetch(`https://api.themoviedb.org/3/account/${accountId}/watchlist/movies?api_key=${apiKey}&session_id=${sessionId}`)
+        const result = await fetch(`https://api.themoviedb.org/3/account/${accountId}/watchlist/movies?api_key=${API_KEY}&session_id=${sessionId}`)
             .then(response => response.json())
             .then(response => {
 
@@ -408,7 +408,7 @@ export const fetchMovieWatchList = (accountId, sessionId) => {
 export const fetchTvWatchList = (accountId, sessionId) => {
     return async (dispatch) => {
 
-        const result = await fetch(`https://api.themoviedb.org/3/account/${accountId}/watchlist/tv?api_key=${apiKey}&session_id=${sessionId}`)
+        const result = await fetch(`https://api.themoviedb.org/3/account/${accountId}/watchlist/tv?api_key=${API_KEY}&session_id=${sessionId}`)
             .then(response => response.json())
             .then(response => {
                 return response.results.map((result) => {
@@ -429,7 +429,7 @@ export const fetchTvWatchList = (accountId, sessionId) => {
 
 export const addToListsAction = (user, type, itemID, markAs, item) => {
     return async (dispatch) => {
-        const result = await fetch(`https://api.themoviedb.org/3/account/${user.id}/watchlist?api_key=${apiKey}&session_id=${user.session_id}`, {
+        const result = await fetch(`https://api.themoviedb.org/3/account/${user.id}/watchlist?api_key=${API_KEY}&session_id=${user.session_id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'

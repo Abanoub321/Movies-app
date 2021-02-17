@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { apiKey } from '../../Env';
+import { API_KEY } from '@env';
 import { removeSession } from '../actions';
 import { centerdAboveDetail, rowDetail } from '../styles';
 const ProfileScreen = (props) => {
@@ -10,7 +10,7 @@ const ProfileScreen = (props) => {
         f();
     })
     const f = async () => {
-        const result = await fetch(`https://api.themoviedb.org/3/account?api_key=${apiKey}&session_id=${id}`)
+        const result = await fetch(`https://api.themoviedb.org/3/account?api_key=${API_KEY}&session_id=${id}`)
             .then(response => response.json())
 
     }

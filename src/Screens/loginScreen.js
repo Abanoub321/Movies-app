@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { GuestLogin, UserLogin } from '../Components/LoginComponent'
 import { loginAsGuest, loginAsUser ,getToken} from '../actions';
 import { rowDetail, buttonText, buttons, centerdAboveDetail } from '../styles';
-import { apiKey } from '../../Env';
 const LoginScreen = (props) => {
     const { loginAsGuest, loginAsUser, navigation, token ,getToken } = props;
     const [name, setName] = useState('');

@@ -16,7 +16,7 @@ import {fetchSeasonData,onPageRefersh} from '../actions';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
 import { RenderExternalIDS } from '../Components/LinkerComponent';
-import {  baseUrl } from '../../Env';
+import {  BASE_URL } from '@env';
 import {onSeasonScreenRefresh} from '../actions/constStrings'
 import { Title, overView, rowDetail, detailsHeader, buttons, centerdAboveDetail , buttonText} from '../styles';
 
@@ -74,7 +74,7 @@ const SeasonScreen = (props) => {
                 }
             >
                 <View>
-                    <Image source={{ uri: baseUrl + season.poster_path }} style={styles.posterImage} />
+                    <Image source={{ uri: BASE_URL + season.poster_path }} style={styles.posterImage} />
                 </View>
                 <Text style={Title}>{season.name}</Text>
                 <View style={centerdAboveDetail}>

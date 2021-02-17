@@ -5,7 +5,7 @@ import RenderItemAppearence from '../Components/RenderItemAppearence';
 import { SearchComponent } from '../Components/SearchComponent';
 import { PaginationComponent } from '../Components/SimplePaginationComponent';
 import { rowDetail } from '../styles';
-import { apiKey } from '../../Env';
+import { API_KEY } from '@env';
 const DiscoverMovies = ({ navigation }) => {
     const [sortBy, setSortBy] = useState('popular');
     const [genreId, setGenreId] = useState('');
@@ -44,10 +44,10 @@ const DiscoverMovies = ({ navigation }) => {
     }, [fetched, lastFetched, pageNo])
 
     const fetchData = async () => {
-        let url = `https://api.themoviedb.org/3/movie/${sortBy}?api_key=${apiKey}&page=${pageNo}`;
+        let url = `https://api.themoviedb.org/3/movie/${sortBy}?api_key=${API_KEY}&page=${pageNo}`;
         let response = await fetch(url);
         let moviesData = await response.json();
-        url = `https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}`;
+        url = `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}`;
         fetch(url)
             .then(response => response.json())
             .then(response => {
@@ -59,7 +59,7 @@ const DiscoverMovies = ({ navigation }) => {
         setTimeout(() => setFetched(true), 1250)
     }
     const fetchGenre = async () => {
-        let url = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=popularity.desc&with_genres=${genreId}&page=${pageNo}`
+        let url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&sort_by=popularity.desc&with_genres=${genreId}&page=${pageNo}`
         let response = await fetch(url)
             .then(response => response.json())
         setTotalPages(response.total_pages);
@@ -67,7 +67,7 @@ const DiscoverMovies = ({ navigation }) => {
         setFetched(true)
     }
     const fetchSearch = async () => {
-        let url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${searchText}&page=${pageNo}`;
+        let url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${searchText}&page=${pageNo}`;
         let response = await fetch(url)
             .then(response => response.json())
         setMovies(response.results);

@@ -5,7 +5,7 @@ import RenderItemAppearence from '../Components/RenderItemAppearence';
 import { SearchComponent } from '../Components/SearchComponent';
 import { PaginationComponent } from '../Components/SimplePaginationComponent';
 import { rowDetail } from '../styles';
-import { apiKey } from '../../Env';
+import { API_KEY } from '@env';
 const DiscoverSeries = ({ navigation }) => {
     const [sortBy, setSortBy] = useState('popular');
     const [genreId, setGenreId] = useState('');
@@ -40,10 +40,10 @@ const DiscoverSeries = ({ navigation }) => {
     }, [fetched, lastFetched, pageNo])
 
     const fetchData = async () => {
-        let url = `https://api.themoviedb.org/3/tv/${sortBy}?api_key=${apiKey}&page=${pageNo}`;
+        let url = `https://api.themoviedb.org/3/tv/${sortBy}?api_key=${API_KEY}&page=${pageNo}`;
         let response = await fetch(url);
         let tvData = await response.json();
-        url = `https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}`;
+        url = `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}`;
         fetch(url)
             .then(response => response.json())
             .then(response => {
@@ -56,7 +56,7 @@ const DiscoverSeries = ({ navigation }) => {
        // setTimeout(() => setFetched(true), 1250)
     }
     const fetchGenre = async () => {
-        let url = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&sort_by=popularity.desc&with_genres=${genreId}&page=${pageNo}`
+        let url = `https://api.themoviedb.org/3/discover/tv?api_key=${API_KEY}&sort_by=popularity.desc&with_genres=${genreId}&page=${pageNo}`
         let response = await fetch(url)
             .then(response => response.json())
             .then(setFetched(true))
@@ -65,7 +65,7 @@ const DiscoverSeries = ({ navigation }) => {
      //   setFetched(true)
     }
     const fetchSearch = async () => {
-        let url = `https://api.themoviedb.org/3/search/tv?api_key=${apiKey}&query=${searchText}&page=${pageNo}`;
+        let url = `https://api.themoviedb.org/3/search/tv?api_key=${API_KEY}&query=${searchText}&page=${pageNo}`;
         let response = await fetch(url)
             .then(response => response.json())
         setTV(response.results);

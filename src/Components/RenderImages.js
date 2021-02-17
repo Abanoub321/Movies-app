@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, FlatList, Image ,Dimensions} from 'react-native';
-import { baseUrl } from '../../Env';
+import { BASE_URL } from '@env';
 const RenderImages = ({ images }) => {
 
     return (
@@ -21,7 +21,7 @@ const RenderImages = ({ images }) => {
 const RenderImage = (image) => {
     return (
         <View style={{ marginRight: 15 }}>
-            <Image source={{ uri: baseUrl + image.item.file_path }}
+            <Image source={{ uri: BASE_URL + image.item.file_path }}
                 style={{
                     height: 250,
                     aspectRatio: image.item.aspect_ratio,

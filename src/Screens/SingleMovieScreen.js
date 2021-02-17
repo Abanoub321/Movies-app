@@ -17,7 +17,7 @@ import RatingComponent from '../Components/RatingComponent';
 import { RenderExternalIDS } from '../Components/LinkerComponent';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
-import { baseUrl } from '../../Env';
+import { BASE_URL } from '@env';
 import { detailsHeader, overView, genreContainer, rowDetail, centerdAboveDetail, buttons, buttonText } from '../styles';
 import { onMovieScreenRefresh } from '../actions/constStrings';
 const MovieScreen = (props) => {
@@ -117,11 +117,11 @@ const MovieScreen = (props) => {
 
                 <View style={{ flex: 1 }}>
 
-                    <Image source={{ uri: baseUrl + movie.backdrop_path }} style={styles.backgroundImage} />
+                    <Image source={{ uri: BASE_URL + movie.backdrop_path }} style={styles.backgroundImage} />
 
                     <View style={styles.hoveredContainer}>
 
-                        <Image source={{ uri: baseUrl + movie.poster_path }} style={[styles.posterImage, { justifyContent: 'center', marginTop: 65 }]} />
+                        <Image source={{ uri: BASE_URL + movie.poster_path }} style={[styles.posterImage, { justifyContent: 'center', marginTop: 65 }]} />
                     </View>
                     <View>
                         <View style={centerdAboveDetail}>

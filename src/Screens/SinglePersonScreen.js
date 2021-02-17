@@ -5,7 +5,7 @@ import { fetchPersonData ,onPageRefersh} from '../actions';
 import { View, Text, ScrollView, Image, ActivityIndicator, RefreshControl, FlatList, TouchableOpacity } from 'react-native';
 
 import { RenderExternalIDS } from '../Components/LinkerComponent';
-import { baseUrl } from '../../Env';
+import { BASE_URL } from '@env';
 import { posterImage, Title, overView, rowDetail, detailsHeader, centerdAboveDetail, buttons, buttonText } from '../styles';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
@@ -59,7 +59,7 @@ const PersonScreen = (props) => {
                     <Image
                         source={
                             {
-                                uri: (person.profile_path == null ? 'https://www.pngkey.com/png/full/21-213224_unknown-person-icon-png-download.png' : baseUrl + person.profile_path)
+                                uri: (person.profile_path == null ? 'https://www.pngkey.com/png/full/21-213224_unknown-person-icon-png-download.png' : BASE_URL + person.profile_path)
                             }
                         }
                         style={posterImage}

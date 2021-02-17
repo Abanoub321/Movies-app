@@ -14,7 +14,7 @@ import { fetchEpisodeData, onPageRefersh } from '../actions';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
 import { RenderExternalIDS } from '../Components/LinkerComponent';
-import { apiKey, baseUrl } from '../../Env';
+import { apiKey, BASE_URL } from '@env';
 import { posterImage, Title, detailsHeader, centerdAboveDetail, buttons, rowDetail, buttonText } from '../styles';
 import { onEpisodeScreenRefresh } from '../actions/constStrings';
 
@@ -69,7 +69,7 @@ const EpisodeScreen = (props) => {
                 }
             >
                 <View>
-                    <Image source={{ uri: baseUrl + (episode.still_path == null ? poster : episode.still_path) }} style={posterImage} />
+                    <Image source={{ uri: BASE_URL + (episode.still_path == null ? poster : episode.still_path) }} style={posterImage} />
                     <Text style={Title}>{episode.name}</Text>
                     <View style={centerdAboveDetail}>
                         <Text style={detailsHeader}>Release Date</Text>

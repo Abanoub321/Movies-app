@@ -14,7 +14,7 @@ import { fetchTvData, onPageRefersh } from '../actions';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
 import { RenderExternalIDS } from '../Components/LinkerComponent';
-import { baseUrl } from '../../Env';
+import { BASE_URL } from '@env';
 import { backgroundImage, Title, buttons, overView, rowDetail, detailsHeader, centerdAboveDetail, genreContainer, buttonText } from '../styles';
 import { onTvScreenRefresh } from '../actions/constStrings';
 
@@ -110,7 +110,7 @@ const TvScreen = (props) => {
                 }
             >
                 <View style={{ flex: 1 }}>
-                    <Image source={{ uri: baseUrl + tv.backdrop_path }} style={backgroundImage} />
+                    <Image source={{ uri: BASE_URL + tv.backdrop_path }} style={backgroundImage} />
 
                     <View>
                         <Text style={Title}> {tv.name} </Text>

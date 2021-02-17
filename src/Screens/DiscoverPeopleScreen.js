@@ -3,7 +3,7 @@ import { View, FlatList, RefreshControl, ActivityIndicator, TouchableOpacity, Te
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import { SearchComponent } from '../Components/SearchComponent';
 import { PaginationComponent } from '../Components/SimplePaginationComponent';
-import { apiKey } from '../../Env';
+import { API_KEY } from '@env';
 import { rowDetail } from '../styles';
 const DiscoverPeople = ({ navigation }) => {
 
@@ -25,7 +25,7 @@ const DiscoverPeople = ({ navigation }) => {
     }, [fetched, lastFetched, pageNo])
 
     const fetchData = async () => {
-        let url = `https://api.themoviedb.org/3/person/popular?api_key=${apiKey}&page=${pageNo}`;
+        let url = `https://api.themoviedb.org/3/person/popular?api_key=${API_KEY}&page=${pageNo}`;
         let response = await fetch(url);
         let personData = await response.json();
 
@@ -37,7 +37,7 @@ const DiscoverPeople = ({ navigation }) => {
     }
 
     const fetchSearch = async () => {
-        let url = `https://api.themoviedb.org/3/search/person?api_key=${apiKey}&query=${searchText}&page=${pageNo}`;
+        let url = `https://api.themoviedb.org/3/search/person?api_key=${API_KEY}&query=${searchText}&page=${pageNo}`;
         let response = await fetch(url)
             .then(response => response.json())
         setPerson(response.results);
