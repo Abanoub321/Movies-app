@@ -11,56 +11,33 @@ import {
     RefreshControl,
     TouchableOpacity
 } from 'react-native';
+import {connect} from 'react-redux'
+import {fetchSeasonData,onPageRefersh} from '../actions';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
 import { RenderExternalIDS } from '../Components/LinkerComponent';
-import { apiKey, baseUrl } from '../../Env';
+import {  BASE_URL } from '@env';
+import {onSeasonScreenRefresh} from '../actions/constStrings'
 import { Title, overView, rowDetail, detailsHeader, buttons, centerdAboveDetail , buttonText} from '../styles';
 
-const SeasonScreen = ({ route, navigation }) => {
+const SeasonScreen = (props) => {
+    const { route, navigation,fetchSeasonData ,season,cast,images,externalIds,videos,fetched,onPageRefersh} = props;
     const { id, seasonNo } = route.params;
-    const [season, setSeason] = useState({});
-    const [fetched, setFetched] = useState(false);
-    const [cast, setCast] = useState([]);
-    const [images, setImages] = useState([]);
-    const [externalIds, setExternalIds] = useState({});
-    const [videos, setVideos] = useState([]);
     const [episodeBPressed, setEpisodeBPressed] = useState(false);
     const [castBPressed, setCastBPressed] = useState(false);
     const [imageBPressed, setImageBPressed] = useState(false)
 
     useEffect(() => {
-
+        
         if (!fetched)
-            fetchSeasonData();
-
+            fetchSeasonData(id,seasonNo);
+            navigation.addListener('focus', (e) => {
+                onPageRefersh(onSeasonScreenRefresh,false);
+            })
     }, [fetched])
-    const fetchSeasonData = async () => {
-        let url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}?api_key=${apiKey}`;
-        let response = await fetch(url);
-        let seasonData = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}/credits?api_key=${apiKey}`;
-        response = await fetch(url);
-        let seasonCredits = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}/images?api_key=${apiKey}`;
-        response = await fetch(url);
-        let seasonImages = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}/external_ids?api_key=${apiKey}`;
-        response = await fetch(url);
-        let seasonExternalIds = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}/videos?api_key=${apiKey}`;
-        response = await fetch(url);
-        let seasonVideos = await response.json();
-
-        setSeason(seasonData);
-        setCast(seasonCredits.cast)
-        setImages(seasonImages.posters);
-        setExternalIds(seasonExternalIds);
-        setVideos(seasonVideos.results);
-        setFetched(true);
-    }
+   
     const onRefresh = () => {
-        setFetched(false);
+        onPageRefersh(onSeasonScreenRefresh,false);
     }
 
     const setFalse = () => {
@@ -97,7 +74,7 @@ const SeasonScreen = ({ route, navigation }) => {
                 }
             >
                 <View>
-                    <Image source={{ uri: baseUrl + season.poster_path }} style={styles.posterImage} />
+                    <Image source={{ uri: BASE_URL + season.poster_path }} style={styles.posterImage} />
                 </View>
                 <Text style={Title}>{season.name}</Text>
                 <View style={centerdAboveDetail}>
@@ -136,7 +113,7 @@ const SeasonScreen = ({ route, navigation }) => {
                                     renderItem={(item) =>
                                         <RenderItemAppearence
                                             item={{
-                                                itemId: id,
+                                                itemId: route.params.id,
                                                 itemName: item.item.name,
                                                 itemPoster: season.poster_path,
                                                 itemSeason: item.item.season_number,
@@ -192,7 +169,7 @@ const SeasonScreen = ({ route, navigation }) => {
                     imageBPressed ? <RenderImages images={images} /> : null
                 }
                 <View style={rowDetail}>
-                    <RenderExternalIDS ids={{ ...externalIds }} imdbUrl='https://www.imdb.com/title/' videos={videos} />
+                    <RenderExternalIDS ids={{ ...externalIds }} imdbUrl='https://www.imdb.com/title/' videos={!videos? []:videos} />
                 </View>
             </ScrollView >
         )
@@ -215,5 +192,7 @@ const styles = StyleSheet.create({
 
 
 })
-
-export default SeasonScreen;
+const mapStateToProps = state =>{
+    return state.season;
+}
+export default connect(mapStateToProps,{fetchSeasonData,onPageRefersh})(SeasonScreen);

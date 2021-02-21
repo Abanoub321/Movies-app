@@ -11,66 +11,45 @@ import {
     ActivityIndicator,
     TouchableOpacity
 } from 'react-native';
+import { connect } from 'react-redux'
+import { fetchMovie, onPageRefersh,addMovieRating } from '../actions';
+import RatingComponent from '../Components/RatingComponent';
 import { RenderExternalIDS } from '../Components/LinkerComponent';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
-import { apiKey, baseUrl } from '../../Env';
-import { detailsHeader, overView, genreContainer, rowDetail, centerdAboveDetail, buttons,buttonText } from '../styles';
-const MovieScreen = ({ route, navigation }) => {
+import { BASE_URL } from '@env';
+import { detailsHeader, overView, genreContainer, rowDetail, centerdAboveDetail, buttons, buttonText } from '../styles';
+import {  onMovieScreenRefresh } from '../actions/constStrings';
+const MovieScreen = (props) => {
+    const {
+        route,
+        navigation,
+        fetchMovie,
+        movie,
+        credits,
+        externalIds,
+        images,
+        similarMovies,
+        videos,
+        errors,
+        id,
+        session_id,
+        fetched,
+        onPageRefersh,
+        rating,
+        type,
+        addMovieRating
+    } = props;
 
-    const { id } = route.params;
-    const [fetched, setFetched] = useState(false);
-    const [movie, setMovie] = useState({});
-    const [credits, setCredits] = useState({});
-    const [externalIds, setExternalIds] = useState({});
-    const [images, setImages] = useState({});
-    const [similarMovies, setSimilarMovies] = useState([]);
-    const [videos, setVideos] = useState([]);
+
+    
     const [imageBPressed, setImageBPressed] = useState(false);
     const [similarBPressed, setSimilarBPressed] = useState(false);
     const [castBPressed, setCastBPressed] = useState(false);
     const [companiesBPressed, setCompaniesBPressed] = useState(false);
-    useEffect(() => {
-        if (!fetched)
-            fetchMovieData();
-        setFetched(true);
-    }, [fetched,navigation])
 
-    const fetchMovieData = async () => {
-        let url = `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=en-US`;
-        let response = await fetch(url);
-        let movie = await response.json();
-        url = `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${apiKey}&language=en-US`;
-        response = await fetch(url);
-        let creditsData = await response.json();
-        url = `https://api.themoviedb.org/3/movie/${id}/external_ids?api_key=${apiKey}&language=en-US`;
-        response = await fetch(url);
-        let externalIdsData = await response.json();
-        url = `https://api.themoviedb.org/3/movie/${id}/images?api_key=${apiKey}`;
-        response = await fetch(url);
-        let imagesData = await response.json();
-        url = `https://api.themoviedb.org/3/movie/${id}/similar?api_key=${apiKey}&page=1`;
-        response = await fetch(url);
-        let similarMoviesData = await response.json();
-        url = `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${apiKey}`;
-        response = await fetch(url);
-        let videosData = await response.json();
-        setMovie(movie);
-        setCredits(creditsData);
-        setExternalIds(externalIdsData);
-        setImages(imagesData.backdrops.concat(imagesData.posters));
-        setSimilarMovies(similarMoviesData.results);
-        setVideos(videosData.results);
-    }
 
-    const imageButton = () => {
-        setImageBPressed(!imageBPressed);
-        if (imageBPressed)
-            setImageTitle('More Images')
-        else
-            setImageTitle('Less Images')
-    }
-
+    
     const handleGenres = ({ item }) => {
         return (
             <View style={genreContainer}>
@@ -79,9 +58,7 @@ const MovieScreen = ({ route, navigation }) => {
             </View>
         )
     }
-    const onRefresh = () => {
-        setFetched(false);
-    }
+
 
 
     const setFalse = () => {
@@ -107,6 +84,21 @@ const MovieScreen = ({ route, navigation }) => {
         setFalse();
         setCompaniesBPressed(!companiesBPressed);
     }
+
+    const onRefersh = () => {
+        onPageRefersh(onMovieScreenRefresh, false);
+    }
+    useEffect(() => {
+        if (!fetched)
+            fetchMovie(route.params.id, id, session_id);
+
+        navigation.addListener('focus', (e) => {
+
+            onPageRefersh(onMovieScreenRefresh, false);
+        })
+
+    }, [fetched])
+
     if (!fetched) {
         return (
             <View>
@@ -118,17 +110,17 @@ const MovieScreen = ({ route, navigation }) => {
         return (
             <ScrollView
                 refreshControl={
-                    <RefreshControl refreshing={!fetched} onRefresh={onRefresh} />
+                    <RefreshControl refreshing={!fetched} onRefresh={onRefersh} />
                 }
             >
 
                 <View style={{ flex: 1 }}>
 
-                    <Image source={{ uri: baseUrl + movie.backdrop_path }} style={styles.backgroundImage} />
+                    <Image source={{ uri: BASE_URL + movie.backdrop_path }} style={styles.backgroundImage} />
 
                     <View style={styles.hoveredContainer}>
 
-                        <Image source={{ uri: baseUrl + movie.poster_path }} style={[styles.posterImage, { justifyContent: 'center', marginTop: 65 }]} />
+                        <Image source={{ uri: BASE_URL + movie.poster_path }} style={[styles.posterImage, { justifyContent: 'center', marginTop: 65 }]} />
                     </View>
                     <View>
                         <View style={centerdAboveDetail}>
@@ -165,11 +157,20 @@ const MovieScreen = ({ route, navigation }) => {
                                 </Text>
                             </View>
                         </View>
+
                         <View style={{ alignSelf: 'center' }}>
                             <Text style={{ fontSize: 20, color: 'red' }}>
                                 {movie.status}
                             </Text>
                         </View>
+                        {
+                            type != '' ? (
+                                <View style={centerdAboveDetail}>
+                                    <Text>{rating ==0?'Add':'Your'} Rating</Text>
+                                    <RatingComponent onPress={addMovieRating} rating={rating} itemID = {movie.id} userId ={type=='user'?session_id:id} type={type}/>
+                                </View>
+                            ):null
+                        }
 
                         <View>
                             <Text style={overView}>
@@ -232,7 +233,7 @@ const MovieScreen = ({ route, navigation }) => {
                                                             itemName: item.item.name,
                                                             itemPoster: item.item.profile_path,
                                                             itemType: 'person',
-                                                            previosState:'movie'
+                                                            previosState: 'movie'
                                                         }}
                                                         navigation={navigation}
                                                     />
@@ -260,7 +261,7 @@ const MovieScreen = ({ route, navigation }) => {
                                                     itemName: item.title,
                                                     itemPoster: item.poster_path,
                                                     itemType: 'movie',
-                                                    previosState:'movie'
+                                                    previosState: 'movie'
                                                 }}
                                                 navigation={navigation}
                                             />
@@ -285,7 +286,7 @@ const MovieScreen = ({ route, navigation }) => {
                                                     itemName: item.item.name,
                                                     itemPoster: item.item.logo_path,
                                                     itemType: 'logo',
-                                                    previosState:'movie'
+                                                    previosState: 'movie'
                                                 }}
                                             />
                                         }
@@ -334,5 +335,11 @@ const styles = StyleSheet.create({
         margin: 3,
     },
 
-})
-export default MovieScreen;
+});
+
+const mapStateToProps = state => {
+    const movie = state.Movie;
+    const { id, session_id, type } = state.user;
+    return { ...movie, id, session_id, type };
+}
+export default connect(mapStateToProps, { fetchMovie, onPageRefersh,addMovieRating })(MovieScreen);

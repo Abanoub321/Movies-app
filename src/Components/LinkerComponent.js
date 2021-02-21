@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Linking, Text, ToastAndroid, TouchableOpacity } from 'react-native';
-import { showMessage } from 'react-native-flash-message';
+
 
 
 const LinkerComponent = ({ baseUrl, url, color, text }) => {

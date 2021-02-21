@@ -9,56 +9,32 @@ import {
     ActivityIndicator,
     RefreshControl
 } from 'react-native';
+import { connect } from 'react-redux';
+import { fetchEpisodeData, onPageRefersh } from '../actions';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
 import { RenderExternalIDS } from '../Components/LinkerComponent';
-import { apiKey, baseUrl } from '../../Env';
-import { posterImage, Title, detailsHeader, centerdAboveDetail, buttons, rowDetail,buttonText } from '../styles';
+import {  BASE_URL } from '@env';
+import { posterImage, Title, detailsHeader, centerdAboveDetail, buttons, rowDetail, buttonText } from '../styles';
+import { onEpisodeScreenRefresh } from '../actions/constStrings';
 
-const EpisodeScreen = ({ route, navigation }) => {
+const EpisodeScreen = (props) => {
+    const { route, navigation, fetchEpisodeData, episode, cast, guest, images, externalIds, videos, onPageRefersh, fetched } = props;
     const { id, seasonNo, episodeNo, poster } = route.params;
-    const [episode, setEpisode] = useState([]);
-    const [cast, setCast] = useState([]);
-    const [guest, setGuest] = useState([]);
-    const [images, setImages] = useState([]);
-    const [fetched, setFetched] = useState(false);
     const [castBPressed, setCastBPressed] = useState(false);
-    const [externalIds, setExternalIds] = useState({});
-    const [videos, setVideos] = useState([]);
     const [guestBPressed, setGuestBPressed] = useState(false);
     const [imageBPressed, setImageBPressed] = useState(false)
     useEffect(() => {
-        setFetched(false);
         if (!fetched)
-            fetchEpisodeData();
-        setFetched(true);
+            fetchEpisodeData(id, seasonNo, episodeNo);
+        navigation.addListener('focus', (e) => {
+            onPageRefersh(onEpisodeScreenRefresh, false);
+        })
     });
     const onRefresh = () => {
-        setFetched(false);
+        onPageRefersh(onEpisodeScreenRefresh, false)
     }
-    const fetchEpisodeData = async () => {
-        let url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}/episode/${episodeNo}?api_key=${apiKey}`;
-        let response = await fetch(url);
-        let episodeData = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}/episode/${episodeNo}/credits?api_key=${apiKey}`;
-        response = await fetch(url);
-        let credits = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}/episode/${episodeNo}/images?api_key=${apiKey}`;
-        response = await fetch(url);
-        let images = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}/episode/${episodeNo}/external_ids?api_key=${apiKey}`;
-        response = await fetch(url);
-        let seasonExternalIds = await response.json();
-        url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}/episode/${episodeNo}/videos?api_key=${apiKey}`;
-        response = await fetch(url);
-        let seasonVideos = await response.json();
-        setEpisode(episodeData);
-        setCast(credits.cast);
-        setGuest(credits.guest_stars);
-        setImages(images.stills);
-        setExternalIds(seasonExternalIds);
-        setVideos(seasonVideos.results);
-    }
+
 
     const setFalse = () => {
         setCastBPressed(false);
@@ -93,7 +69,7 @@ const EpisodeScreen = ({ route, navigation }) => {
                 }
             >
                 <View>
-                    <Image source={{ uri: baseUrl + (episode.still_path == null ? poster : episode.still_path) }} style={posterImage} />
+                    <Image source={{ uri: BASE_URL + (episode.still_path == null ? poster : episode.still_path) }} style={posterImage} />
                     <Text style={Title}>{episode.name}</Text>
                     <View style={centerdAboveDetail}>
                         <Text style={detailsHeader}>Release Date</Text>
@@ -189,4 +165,8 @@ const EpisodeScreen = ({ route, navigation }) => {
     }
 }
 
-export default EpisodeScreen;
+const mapStateToProps = state => {
+    return state.episode;
+}
+
+export default connect(mapStateToProps, { fetchEpisodeData, onPageRefersh })(EpisodeScreen);

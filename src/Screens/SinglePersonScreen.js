@@ -1,47 +1,33 @@
 
 import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { fetchPersonData ,onPageRefersh} from '../actions';
 import { View, Text, ScrollView, Image, ActivityIndicator, RefreshControl, FlatList, TouchableOpacity } from 'react-native';
+
 import { RenderExternalIDS } from '../Components/LinkerComponent';
-import { apiKey, baseUrl } from '../../Env';
-import { posterImage, Title, overView, rowDetail, detailsHeader, centerdAboveDetail, buttons,buttonText } from '../styles';
+import { BASE_URL } from '@env';
+import { posterImage, Title, overView, rowDetail, detailsHeader, centerdAboveDetail, buttons, buttonText } from '../styles';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
-const PersonScreen = ({ route, navigation }) => {
+import { onPersonScreenRefresh } from '../actions/constStrings';
+const PersonScreen = (props) => {
+    const { route, navigation, fetchPersonData, person, credits, externalIds, images ,fetched,onPageRefersh} = props;
     const { id } = route.params;
-    const [fetched, setFetched] = useState(false);
-    const [person, setPerson] = useState({});
-    const [credits, setCredits] = useState({});
-    const [externalIds, setExternalId] = useState({});
-    const [images, setImages] = useState({});
     const [imageBPressed, setImageBPressed] = useState(false);
     const [castBPressed, setCastBPressed] = useState(false);
     const [crewBPressed, setCrewBPressed] = useState(false);
     useEffect(() => {
         if (!fetched)
-            fetchPerson();
+            fetchPersonData(id);
+        navigation.addListener('focus', (e) => {
+
+            onPageRefersh(onPersonScreenRefresh, false);
+        })
     }, [fetched])
 
-    const fetchPerson = async () => {
-        let url = `https://api.themoviedb.org/3/person/${id}?api_key=${apiKey}`;
-        let response = await fetch(url);
-        let personData = await response.json();
-        url = `https://api.themoviedb.org/3/person/${id}/combined_credits?api_key=${apiKey}`;
-        response = await fetch(url);
-        let creditsData = await response.json();
-        url = `https://api.themoviedb.org/3/person/${id}/external_ids?api_key=${apiKey}`;
-        response = await fetch(url);
-        let externalIdsData = await response.json();
-        url = `https://api.themoviedb.org/3/person/${id}/images?api_key=${apiKey}`;
-        response = await fetch(url);
-        let imagesData = await response.json();
-        setPerson(personData);
-        setCredits(creditsData);
-        setExternalId(externalIdsData);
-        setImages(imagesData);
-        setFetched(true);
-    }
+
     const onRefresh = () => {
-        setFetched(false);
+        onPageRefersh(onPersonScreenRefresh, false);
     }
     const setFalse = () => {
         setCastBPressed(false);
@@ -73,7 +59,7 @@ const PersonScreen = ({ route, navigation }) => {
                     <Image
                         source={
                             {
-                                uri: (person.profile_path == null ? 'https://www.pngkey.com/png/full/21-213224_unknown-person-icon-png-download.png' : baseUrl + person.profile_path)
+                                uri: (person.profile_path == null ? 'https://www.pngkey.com/png/full/21-213224_unknown-person-icon-png-download.png' : BASE_URL + person.profile_path)
                             }
                         }
                         style={posterImage}
@@ -183,11 +169,11 @@ const PersonScreen = ({ route, navigation }) => {
                                 />)
                     ) : null
                 }
-               
+
                 {
                     imageBPressed ? <RenderImages images={images.profiles} /> : null
                 }
-               
+
             </ScrollView>
         );
     }
@@ -200,4 +186,8 @@ const PersonScreen = ({ route, navigation }) => {
     }
 }
 
-export default PersonScreen;
+const mapStateToProps = state => {
+    return state.person;
+}
+
+export default connect(mapStateToProps, { fetchPersonData,onPageRefersh })(PersonScreen);
