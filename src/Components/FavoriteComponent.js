@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, Touchable } from 'react-native';
+import { View, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { API_KEY } from '@env';
 import { addToListsAction } from '../actions';
 function mapStateToProps(state) {
 

@@ -28,6 +28,7 @@
     "react-native-screens": "^2.16.1",
     "react-native-star-rating": "^1.1.0",
     "react-native-tab-view": "^2.15.2",
+    "react-native-toast-message": "^1.4.7",
     "react-native-vector-icons": "^8.0.0",
     "react-redux": "^7.2.2",
     "recompose": "^0.30.0",

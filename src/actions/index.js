@@ -18,7 +18,8 @@ import {
     changeListMovie,
     changeListTV,
     addMovieRatingString,
-    addTvRatingString
+    addTvRatingString,
+    trendingErrors
 } from './constStrings';
 import { API_KEY } from '@env';
 
@@ -144,65 +145,72 @@ export const removeSession = () => {
 
 export const fetchTrendingData = () => {
     return async (dispatch) => {
-        let url = `https://api.themoviedb.org/3/trending/movie/day?api_key=${API_KEY}`;
-        moviesData = await fetch(url)
-            .then(response => response.json())
-            .catch(err => {
-                dispatch({
-                    type: errors,
-                    payload: err
-                })
+        try {
+            let url = `https://api.themoviedb.org/3/trending/movie/day?api_key=${API_KEY}`;
+            moviesData = await fetch(url)
+                .then(response => response.json())
+                .catch(err => {
+                    dispatch({
+                        type: errors,
+                        payload: err
+                    })
+                });
+            url = `https://api.themoviedb.org/3/trending/tv/day?api_key=${API_KEY}`;
+            tvData = await fetch(url)
+                .then(response => response.json())
+                .catch(err => {
+                    dispatch({
+                        type: errors,
+                        payload: err
+                    })
+                });
+            url = `https://api.themoviedb.org/3/trending/person/day?api_key=${API_KEY}`;
+            personData = await fetch(url)
+                .then(response => response.json())
+                .catch(err => {
+                    dispatch({
+                        type: errors,
+                        payload: err
+                    })
+                });
+            moviesData = moviesData.results.map((movie) => {
+                return {
+                    id: movie.id,
+                    title: movie.title,
+                    image: movie.poster_path,
+                    type: 'movie'
+                }
             });
-        url = `https://api.themoviedb.org/3/trending/tv/day?api_key=${API_KEY}`;
-        tvData = await fetch(url)
-            .then(response => response.json())
-            .catch(err => {
-                dispatch({
-                    type: errors,
-                    payload: err
-                })
+            tvData = tvData.results.map((tv) => {
+                return {
+                    id: tv.id,
+                    title: tv.name,
+                    image: tv.poster_path,
+                    type: 'tv'
+                }
             });
-        url = `https://api.themoviedb.org/3/trending/person/day?api_key=${API_KEY}`;
-        personData = await fetch(url)
-            .then(response => response.json())
-            .catch(err => {
-                dispatch({
-                    type: errors,
-                    payload: err
-                })
-            });
-        moviesData = moviesData.results.map((movie) => {
-            return {
-                id: movie.id,
-                title: movie.title,
-                image: movie.poster_path,
-                type: 'movie'
-            }
-        });
-        tvData = tvData.results.map((tv) => {
-            return {
-                id: tv.id,
-                title: tv.name,
-                image: tv.poster_path,
-                type: 'tv'
-            }
-        });
-        personData = personData.results.map((person) => {
-            return {
-                id: person.id,
-                title: person.name,
-                image: person.profile_path,
-                type: 'person'
-            }
-        })
-        dispatch({
-            type: getTrendings,
-            payload: {
-                moviesData,
-                tvData,
-                personData
-            }
-        })
+            personData = personData.results.map((person) => {
+                return {
+                    id: person.id,
+                    title: person.name,
+                    image: person.profile_path,
+                    type: 'person'
+                }
+            })
+            dispatch({
+                type: getTrendings,
+                payload: {
+                    moviesData,
+                    tvData,
+                    personData
+                }
+            })
+        } catch (error) {
+            dispatch({
+                type:trendingErrors,
+                payload:errora
+            })
+        }
     }
 }
 

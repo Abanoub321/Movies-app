@@ -21,7 +21,7 @@ import {onSeasonScreenRefresh} from '../actions/constStrings'
 import { Title, overView, rowDetail, detailsHeader, buttons, centerdAboveDetail , buttonText} from '../styles';
 
 const SeasonScreen = (props) => {
-    const { route, navigation,fetchSeasonData ,season,cast,images,externalIds,videos,errors,fetched,onPageRefersh} = props;
+    const { route, navigation,fetchSeasonData ,season,cast,images,externalIds,videos,fetched,onPageRefersh} = props;
     const { id, seasonNo } = route.params;
     const [episodeBPressed, setEpisodeBPressed] = useState(false);
     const [castBPressed, setCastBPressed] = useState(false);

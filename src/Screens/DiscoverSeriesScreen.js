@@ -53,7 +53,6 @@ const DiscoverSeries = ({ navigation }) => {
         setTV(tvData.results);
         setTotalPages(tv.total_pages);
         setLastFetched('data')
-       // setTimeout(() => setFetched(true), 1250)
     }
     const fetchGenre = async () => {
         let url = `https://api.themoviedb.org/3/discover/tv?api_key=${API_KEY}&sort_by=popularity.desc&with_genres=${genreId}&page=${pageNo}`
@@ -62,7 +61,6 @@ const DiscoverSeries = ({ navigation }) => {
             .then(setFetched(true))
         setTotalPages(response.total_pages);
         setTV(response.results);
-     //   setFetched(true)
     }
     const fetchSearch = async () => {
         let url = `https://api.themoviedb.org/3/search/tv?api_key=${API_KEY}&query=${searchText}&page=${pageNo}`;

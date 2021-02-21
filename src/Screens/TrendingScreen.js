@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from 'react-redux';
 import { fetchTrendingData, onPageRefersh } from '../actions';
-import { View, Text, FlatList, ScrollView, RefreshControl, ActivityIndicator } from "react-native";
-import RenderItemAppearence from '../Components/RenderItemAppearence';
+import { View, Text, ScrollView, RefreshControl, ActivityIndicator } from "react-native";
 import HorizontalItemsFlatList from '../Components/HorizontalItemsFlatList';
 import { Title } from '../styles'
 import { onHomeRefresh } from "../actions/constStrings";
@@ -24,9 +23,11 @@ const TrendingScreenComponent = (props) => {
   useEffect(() => {
     if (!fetched)
       fetchTrendingData();
+    if(errors!=''){
+      console.log(errors)
+    }
 
-
-  }, [fetched])
+  }, [fetched,errors])
 
 
   const onRefresh = () => {

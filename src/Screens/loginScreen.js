@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Linking } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { GuestLogin, UserLogin } from '../Components/LoginComponent'
 import { loginAsGuest, loginAsUser ,getToken} from '../actions';
-import { rowDetail, buttonText, buttons, centerdAboveDetail } from '../styles';
+import { rowDetail, buttonText, buttons } from '../styles';
 const LoginScreen = (props) => {
     const { loginAsGuest, loginAsUser, navigation, token ,getToken } = props;
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [state, setState] = useState(0);
-    const [activateState, setActivateState] = useState(false);
 
    
 
@@ -67,7 +66,6 @@ const LoginScreen = (props) => {
     )
 }
 const mapStateToProps = state => {
- //   console.log(state.user);
     return {token: state.user.token};
     
 }

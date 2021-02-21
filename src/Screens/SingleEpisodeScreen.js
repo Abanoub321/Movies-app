@@ -14,12 +14,12 @@ import { fetchEpisodeData, onPageRefersh } from '../actions';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
 import { RenderExternalIDS } from '../Components/LinkerComponent';
-import { apiKey, BASE_URL } from '@env';
+import {  BASE_URL } from '@env';
 import { posterImage, Title, detailsHeader, centerdAboveDetail, buttons, rowDetail, buttonText } from '../styles';
 import { onEpisodeScreenRefresh } from '../actions/constStrings';
 
 const EpisodeScreen = (props) => {
-    const { route, navigation, fetchEpisodeData, episode, cast, guest, images, externalIds, videos, errors, onPageRefersh, fetched } = props;
+    const { route, navigation, fetchEpisodeData, episode, cast, guest, images, externalIds, videos, onPageRefersh, fetched } = props;
     const { id, seasonNo, episodeNo, poster } = route.params;
     const [castBPressed, setCastBPressed] = useState(false);
     const [guestBPressed, setGuestBPressed] = useState(false);

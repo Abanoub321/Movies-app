@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { View, TouchableOpacity, Image } from 'react-native';
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { connect } from 'react-redux';
 
 import { TrendingStackNavigator, DiscoverMoviesStack, DiscoverSeriesStack, DiscoverPeopleStack, LoginStack, ProfileStack ,WatchListStackNavigator} from './StackNavigator';
@@ -11,17 +10,16 @@ import * as actions from '../actions';
 const Drawer = createDrawerNavigator();
 
 export const NavigationDrawerStructure = (props) => {
-  //Structure for the navigatin Drawer
+ 
 
   const toggleDrawer = () => {
-    //Props to open/close the drawer
     props.navigationProps.toggleDrawer();
   };
 
   return (
     <View style={{ flexDirection: 'row' }}>
       <TouchableOpacity onPress={toggleDrawer}>
-        {/*Donute Button Image */}
+      
         <Image
           source={{
             uri:

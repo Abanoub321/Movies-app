@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, TextInput, Linking } from 'react-native';
 import { useState } from 'react/cjs/react.development';
-import { rowDetail, buttons, buttonText } from '../styles';
+import { buttons, buttonText } from '../styles';
 
-const GuestLogin = ({ onPress, onChangeText }) => {
+const GuestLogin2 = ({ onPress, onChangeText }) => {
 
     return (
         <View>
@@ -33,6 +33,23 @@ const GuestLogin = ({ onPress, onChangeText }) => {
         </View>
     )
 }
+const GuestLogin = ({ onPress, onChangeText }) => {
+    return (
+        <View
+            style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+
+                height: 40,
+
+                margin: 10
+            }}
+        >
+            <Text>Sorry Guest Feature isn't available right now</Text>
+        </View>
+    )
+}
 
 const UserLogin = ({ onPress, onChangeText, onChangePassword, token }) => {
     const [activate, setActivate] = useState(false);
@@ -50,7 +67,10 @@ const UserLogin = ({ onPress, onChangeText, onChangePassword, token }) => {
         !activate ?
             (
                 <View>
-                    <Text>
+                    <Text style={{
+                        margin:15,
+                       alignSelf:'center'
+                    }}>
                         You should activate your token first
                     </Text>
                     <TouchableOpacity onPress={activateBtn} style={[buttons, { alignSelf: 'center' }]}>

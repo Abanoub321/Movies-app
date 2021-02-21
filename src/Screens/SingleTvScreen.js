@@ -30,7 +30,6 @@ const TvScreen = (props) => {
         images,
         similar,
         videos,
-        errors,
         fetchTvData,
         id,
         session_id,

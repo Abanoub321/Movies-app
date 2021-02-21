@@ -1,4 +1,4 @@
-import { getTrendings, errors,onHomeRefresh } from '../actions/constStrings';
+import { getTrendings, trendingErrors,onHomeRefresh } from '../actions/constStrings';
 const INITIAL_STATE = {
     movies: [],
     tv: [],
@@ -20,7 +20,7 @@ export default (state = INITIAL_STATE, action) => {
                     fetched:true
                 }
             }
-        case errors :
+        case trendingErrors :
             return {...state,errors:action.payload}
         case onHomeRefresh:
             return {...state,fetched:false}

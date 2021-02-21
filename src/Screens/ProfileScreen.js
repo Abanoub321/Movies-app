@@ -1,26 +1,18 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { API_KEY } from '@env';
 import { removeSession } from '../actions';
-import { centerdAboveDetail, rowDetail } from '../styles';
+import { buttons, buttonText, centerdAboveDetail } from '../styles';
 const ProfileScreen = (props) => {
-    const { removeSession, navigation, id } = props;
-    useEffect(() => {
-        f();
-    })
-    const f = async () => {
-        const result = await fetch(`https://api.themoviedb.org/3/account?api_key=${API_KEY}&session_id=${id}`)
-            .then(response => response.json())
-
-    }
+    const { removeSession } = props;
+    
     return (
         <View>
-            <View style={centerdAboveDetail}>
-                <Text>Profile Screen</Text>
-                <TouchableOpacity onPress={removeSession}>
-                    <Text>
-                        Remove Profile
+            <View style={[centerdAboveDetail,{margin:15}]}>
+                <Text style={{fontSize:20}}>Profile Screen</Text>
+                <TouchableOpacity onPress={removeSession} style={[buttons,{margin:20}]}>
+                    <Text style={buttonText}>
+                        Sign out
                    </Text>
                 </TouchableOpacity>
             </View>
@@ -29,7 +21,6 @@ const ProfileScreen = (props) => {
     )
 }
 const mapStateToProps = state => {
-    //console.log(state.user)
     return { id: state.user.session_id }
 }
 export default connect(mapStateToProps, { removeSession })(ProfileScreen);

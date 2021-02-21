@@ -11,7 +11,7 @@ import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
 import { onPersonScreenRefresh } from '../actions/constStrings';
 const PersonScreen = (props) => {
-    const { route, navigation, fetchPersonData, person, credits, externalIds, images, errors ,fetched,onPageRefersh} = props;
+    const { route, navigation, fetchPersonData, person, credits, externalIds, images ,fetched,onPageRefersh} = props;
     const { id } = route.params;
     const [imageBPressed, setImageBPressed] = useState(false);
     const [castBPressed, setCastBPressed] = useState(false);

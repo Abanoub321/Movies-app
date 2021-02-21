@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, RefreshControl, ActivityIndicator, TouchableOpacity, Text, Touchable } from 'react-native'
+import { View, FlatList, RefreshControl, ActivityIndicator, TouchableOpacity, Text } from 'react-native'
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import { SearchComponent } from '../Components/SearchComponent';
 import { PaginationComponent } from '../Components/SimplePaginationComponent';

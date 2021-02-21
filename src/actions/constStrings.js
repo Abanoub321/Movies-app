@@ -1,7 +1,6 @@
 export const getUserAsync = 'get_user_data';
 export const deleteUserAsync = 'Delete_User_Session';
 export const getTrendings = 'GET_TRENDING';
-export const errors = 'ERROR';
 export const fetchMovieString = 'FETCH_MOVIE';
 export const fetchTvDataString = 'FETCH_TV';
 export const fetchSeasonString = 'FETCH_SEASON';
@@ -23,3 +22,4 @@ export const onSeasonScreenRefresh = 'REFRESH_SEASON_SCREEN';
 export const onEpisodeScreenRefresh = 'REFRESH_Episode_SCREEN';
 export const addMovieRatingString = 'ADD_MOVIE_RATING';
 export const addTvRatingString = 'ADD_TV_RATING';
+export const trendingErrors = 'TRENDING_ERROR';

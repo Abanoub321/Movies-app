@@ -89,7 +89,6 @@ const RenderItemAppearence = ({ item, navigation }) => {
         })
       }
     }
-    //console.log(item.itemName, item.itemId);
   }
 
   const renderImage = () => {
