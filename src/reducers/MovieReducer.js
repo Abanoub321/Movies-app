@@ -1,4 +1,4 @@
-import { changeListMovie, fetchMovieString, onMovieScreenRefresh } from "../actions/constStrings";
+import { addMovieRatingString, changeListMovie, fetchMovieString, onMovieScreenRefresh } from "../actions/constStrings";
 
 const INITIAL_STATE = {
     movie: {},
@@ -9,6 +9,7 @@ const INITIAL_STATE = {
     videos: [],
     watchList: false,
     fetched:false,
+    rating:0,
     errors: ''
 };
 
@@ -16,7 +17,7 @@ export default (state = INITIAL_STATE, action) => {
 
     switch (action.type) {
         case fetchMovieString:
-            const { movie, credits, externalIds, images, similarMovies, videos, watchList } = action.payload;
+            const { movie, credits, externalIds, images, similarMovies, videos, watchList,rating } = action.payload;
             return {
                 ...state,
                 movie,
@@ -26,12 +27,18 @@ export default (state = INITIAL_STATE, action) => {
                 similarMovies,
                 videos,
                 watchList,
-                fetched:true
+                fetched:true,
+                rating
             }
         case changeListMovie:
             return { ...state, watchList: action.payload }
         case onMovieScreenRefresh:
-            return {fetched:false}
+            return {...state, fetched:false}
+        case addMovieRatingString:
+            return{
+                ...state,
+                rating:action.payload
+            }
         default:
             return state;
     }

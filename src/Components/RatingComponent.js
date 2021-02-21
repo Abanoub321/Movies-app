@@ -1,16 +1,19 @@
 import React from 'react';
-import { Rating } from 'react-native-ratings';
+import StarRating from 'react-native-star-rating';
 
-const RatingComponent = ({onPress}) => {
+const RatingComponent = ({onPress,rating,itemID,userId,type}) => {
     return (
-        <Rating
-            ratingColor='#647FE5'
-            ratingCount={10}
-            imageSize={35}
-            fractions={1}
-            onFinishRating={onPress}
-            style={{ paddingVertical: 10 }}
-        />
+       <StarRating 
+       disabled={false}
+       emptyStar={'star-o'}
+       halfStar={'star-half-empty'}
+       fullStar={'star'}
+       maxStars={10}
+       rating={rating}
+       halfStarEnabled={true}
+       selectedStar={(rating)=>onPress(rating,itemID,userId,type)}
+       starSize={35}
+       />
     );
 }
 

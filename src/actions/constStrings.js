@@ -21,3 +21,5 @@ export const onPersonScreenRefresh = 'REFRESH_PERSON_SCREEN';
 export const onHomeRefresh = 'REFRESH_HOME_SCREEN';
 export const onSeasonScreenRefresh = 'REFRESH_SEASON_SCREEN';
 export const onEpisodeScreenRefresh = 'REFRESH_Episode_SCREEN';
+export const addMovieRatingString = 'ADD_MOVIE_RATING';
+export const addTvRatingString = 'ADD_TV_RATING';

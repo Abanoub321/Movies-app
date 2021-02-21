@@ -1,4 +1,4 @@
-import { changeListTV, fetchTvDataString, onTvScreenRefresh } from "../actions/constStrings";
+import { addTvRatingString, changeListTV, fetchTvDataString, onTvScreenRefresh } from "../actions/constStrings";
 
 const INITIAL_STATE = {
     tv: {},
@@ -9,6 +9,7 @@ const INITIAL_STATE = {
     videos: [],
     watchList:false,
     fetched: false,
+    rating:0,
     errors: ''
 };
 
@@ -16,7 +17,7 @@ export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case fetchTvDataString: {
 
-            const { tv, credits, externalIds, images, similar, videos,watchList } = action.payload;
+            const { tv, credits, externalIds, images, similar, videos,watchList,rating } = action.payload;
             return {
                 ...state,
                 tv,
@@ -26,13 +27,16 @@ export default (state = INITIAL_STATE, action) => {
                 similar,
                 videos,
                 watchList,
-                fetched:true
+                fetched:true,
+                rating
             }
         }
         case changeListTV:
             return {...state,watchList:action.payload}
         case onTvScreenRefresh:
             return {...state,fetched:false}
+        case addTvRatingString:
+            return {...state,rating:action.payload}
         default:
             return state;
     }

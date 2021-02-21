@@ -12,14 +12,14 @@ import {
     TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux'
-import { fetchMovie, onPageRefersh } from '../actions';
+import { fetchMovie, onPageRefersh,addMovieRating } from '../actions';
 import RatingComponent from '../Components/RatingComponent';
 import { RenderExternalIDS } from '../Components/LinkerComponent';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
 import { BASE_URL } from '@env';
 import { detailsHeader, overView, genreContainer, rowDetail, centerdAboveDetail, buttons, buttonText } from '../styles';
-import { onMovieScreenRefresh } from '../actions/constStrings';
+import {  onMovieScreenRefresh } from '../actions/constStrings';
 const MovieScreen = (props) => {
     const {
         route,
@@ -35,22 +35,21 @@ const MovieScreen = (props) => {
         id,
         session_id,
         fetched,
-        onPageRefersh
+        onPageRefersh,
+        rating,
+        type,
+        addMovieRating
     } = props;
 
 
-    const [rating, setRating] = useState('');
-
+    
     const [imageBPressed, setImageBPressed] = useState(false);
     const [similarBPressed, setSimilarBPressed] = useState(false);
     const [castBPressed, setCastBPressed] = useState(false);
     const [companiesBPressed, setCompaniesBPressed] = useState(false);
-    
 
-    const rate = (rating) => {
-        setRating(rating)
-        console.log(`Rating is ${rating}`)
-    }
+
+    
     const handleGenres = ({ item }) => {
         return (
             <View style={genreContainer}>
@@ -92,12 +91,12 @@ const MovieScreen = (props) => {
     useEffect(() => {
         if (!fetched)
             fetchMovie(route.params.id, id, session_id);
-       
-         navigation.addListener('focus',(e)=>{
-          
+
+        navigation.addListener('focus', (e) => {
+
             onPageRefersh(onMovieScreenRefresh, false);
         })
-        
+
     }, [fetched])
 
     if (!fetched) {
@@ -164,13 +163,14 @@ const MovieScreen = (props) => {
                                 {movie.status}
                             </Text>
                         </View>
-                        <View style={centerdAboveDetail}>
-                            {
-                                rating != '' ? <Text>Your rating : {rating}</Text> : null
-                            }
-                            <RatingComponent onPress={rate} />
-                        </View>
-
+                        {
+                            type != '' ? (
+                                <View style={centerdAboveDetail}>
+                                    <Text>{rating ==0?'Add':'Your'} Rating</Text>
+                                    <RatingComponent onPress={addMovieRating} rating={rating} itemID = {movie.id} userId ={type=='user'?session_id:id} type={type}/>
+                                </View>
+                            ):null
+                        }
 
                         <View>
                             <Text style={overView}>
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     const movie = state.Movie;
-    const { id, session_id } = state.user;
-    return { ...movie, id, session_id };
+    const { id, session_id, type } = state.user;
+    return { ...movie, id, session_id, type };
 }
-export default connect(mapStateToProps, { fetchMovie, onPageRefersh })(MovieScreen);
+export default connect(mapStateToProps, { fetchMovie, onPageRefersh,addMovieRating })(MovieScreen);

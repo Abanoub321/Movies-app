@@ -10,14 +10,14 @@ import {
     TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import { fetchTvData, onPageRefersh } from '../actions';
+import { fetchTvData, onPageRefersh,addTvRating } from '../actions';
 import RenderItemAppearence from '../Components/RenderItemAppearence';
 import RenderImages from '../Components/RenderImages';
 import { RenderExternalIDS } from '../Components/LinkerComponent';
 import { BASE_URL } from '@env';
 import { backgroundImage, Title, buttons, overView, rowDetail, detailsHeader, centerdAboveDetail, genreContainer, buttonText } from '../styles';
 import { onTvScreenRefresh } from '../actions/constStrings';
-
+import RatingComponent from '../Components/RatingComponent';
 
 
 const TvScreen = (props) => {
@@ -35,7 +35,10 @@ const TvScreen = (props) => {
         id,
         session_id,
         fetched,
-        onPageRefersh
+        onPageRefersh,
+        rating,
+        type,
+        addTvRating
     } = props;
 
     const [imageBPressed, setImageBPressed] = useState(false);
@@ -63,7 +66,7 @@ const TvScreen = (props) => {
         )
     }
     const onRefresh = () => {
-        onPageRefersh(onTvScreenRefresh,false)
+        onPageRefersh(onTvScreenRefresh, false)
     }
 
     const setFalse = () => {
@@ -200,7 +203,14 @@ const TvScreen = (props) => {
                             keyExtractor={item => item.id.toString()}
                         />
                     </View>
-
+                    {
+                        type != '' ? (
+                            <View style={[centerdAboveDetail,{marginTop:10}]}>
+                                <Text>{rating == 0 ? 'Add' : 'Your'} Rating</Text>
+                                <RatingComponent onPress={addTvRating} rating={rating} itemID={tv.id} userId={type == 'user' ? session_id : id} type={type} />
+                            </View>
+                        ) : null
+                    }
                     <View style={[rowDetail, { marginTop: 15, marginBottom: 15, flexWrap: 'wrap' }]}>
 
                         <TouchableOpacity onPress={imagePressed} style={buttons}>
@@ -357,8 +367,8 @@ const TvScreen = (props) => {
 
 const mapStateToProps = state => {
     const tv = state.tv;
-    const { id, session_id } = state.user;
-    return { ...tv, id, session_id };
+    const { id, session_id,type } = state.user;
+    return { ...tv, id, session_id,type };
 }
 
-export default connect(mapStateToProps, { fetchTvData,onPageRefersh })(TvScreen);
+export default connect(mapStateToProps, { fetchTvData, onPageRefersh ,addTvRating})(TvScreen);

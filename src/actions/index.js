@@ -16,7 +16,9 @@ import {
     fetchMovieWatchListString,
     changeListString,
     changeListMovie,
-    changeListTV
+    changeListTV,
+    addMovieRatingString,
+    addTvRatingString
 } from './constStrings';
 import { API_KEY } from '@env';
 
@@ -177,7 +179,7 @@ export const fetchTrendingData = () => {
                 type: 'movie'
             }
         });
-        tvData = tvData.results.map((tv)=>{
+        tvData = tvData.results.map((tv) => {
             return {
                 id: tv.id,
                 title: tv.name,
@@ -185,7 +187,7 @@ export const fetchTrendingData = () => {
                 type: 'tv'
             }
         });
-        personData = personData.results.map((person)=>{
+        personData = personData.results.map((person) => {
             return {
                 id: person.id,
                 title: person.name,
@@ -225,14 +227,29 @@ export const fetchMovie = (movieId, accountId, sessionId) => {
         url = `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${API_KEY}`;
         response = await fetch(url);
         let videosData = await response.json();
-        response = await fetch(`https://api.themoviedb.org/3/account/${accountId}/watchlist/movies?api_key=${API_KEY}&session_id=${sessionId}`)
-            .then(response => response.json())
+        let watchList;
+        let rating = 0;
+        if (accountId != '') {
 
-        let watchList = response.results.filter((result) => result.id == movie.id);
-        if (watchList.length >= 1)
-            watchList = true;
-        else
-            watchList = false;
+            response = await fetch(`https://api.themoviedb.org/3/account/${accountId}/watchlist/movies?api_key=${API_KEY}&session_id=${sessionId}`)
+                .then(response => response.json())
+
+            watchList = response.results.filter((result) => result.id == movie.id);
+            if (watchList.length >= 1)
+                watchList = true;
+            else
+                watchList = false;
+
+            response = await fetch(`https://api.themoviedb.org/3/account/${accountId}/rated/movies?api_key=${API_KEY}&session_id=${sessionId}`)
+                .then(response => response.json());
+
+            if (response.results.length > 0) {
+
+                response = response.results.find(result => movie.id == result.id);
+                if (response)
+                    rating = response.rating;
+            }
+        }
         dispatch({
             type: fetchMovieString,
             payload: {
@@ -242,7 +259,8 @@ export const fetchMovie = (movieId, accountId, sessionId) => {
                 images: imagesData.backdrops.concat(imagesData.posters),
                 similarMovies: similarMoviesData.results,
                 videos: videosData.results,
-                watchList
+                watchList,
+                rating
             }
         })
     }
@@ -273,11 +291,28 @@ export const fetchTvData = (tvId, accountId, sessionId) => {
         response = await fetch(`https://api.themoviedb.org/3/account/${accountId}/watchlist/tv?api_key=${API_KEY}&session_id=${sessionId}`)
             .then(response => response.json());
 
-        let watchList = response.results.filter((result) => result.id == tv.id);
-        if (watchList.length >= 1)
-            watchList = true;
-        else
-            watchList = false;
+
+        let watchList;
+        let rating = 0;
+        if (accountId != '') {
+
+            watchList = response.results.filter((result) => result.id == tv.id);
+            if (watchList.length >= 1)
+                watchList = true;
+            else
+                watchList = false;
+
+            response = await fetch(`https://api.themoviedb.org/3/account/${accountId}/rated/tv?api_key=${API_KEY}&session_id=${sessionId}`)
+                .then(response => response.json());
+
+            if (response.results.length > 0) {
+
+                response = response.results.find(result => tv.id == result.id);
+                if (response)
+                    rating = response.rating;
+            }
+        }
+
         dispatch({
             type: fetchTvDataString,
             payload: {
@@ -287,7 +322,8 @@ export const fetchTvData = (tvId, accountId, sessionId) => {
                 images: tvImages.backdrops.concat(tvImages.posters),
                 similar: tvSimilar.results,
                 videos: tvVideos.results,
-                watchList
+                watchList,
+                rating
             }
         })
     }
@@ -473,5 +509,52 @@ export const onPageRefersh = (string, value) => {
     return {
         type: string,
         payload: value
+    }
+}
+
+export const addMovieRating = (value, itemId, userId, type) => {
+
+    return async (dispatch) => {
+        if (userId != '') {
+            const result = await fetch(`https://api.themoviedb.org/3/movie/${itemId}/rating?api_key=${API_KEY}&session_id=${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify({
+                    value
+                })
+            }).then(response => response.json());
+            console.log(result);
+        }
+        dispatch(
+            {
+                type: addMovieRatingString,
+                payload: value
+            }
+        )
+    }
+}
+export const addTvRating = (value, itemId, userId, type) => {
+
+    return async (dispatch) => {
+        if (userId != '') {
+            const result = await fetch(`https://api.themoviedb.org/3/tv/${itemId}/rating?api_key=${API_KEY}&session_id=${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify({
+                    value
+                })
+            }).then(response => response.json());
+            console.log(result);
+        }
+        dispatch(
+            {
+                type: addTvRatingString,
+                payload: value
+            }
+        )
     }
 }
