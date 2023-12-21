@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import { pure } from 'recompose';
+// import { pure } from 'recompose';
 import { BASE_URL } from '@env';
 
 
@@ -148,4 +148,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default pure(RenderItemAppearence);
+export default RenderItemAppearence;

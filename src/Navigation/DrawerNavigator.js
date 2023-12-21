@@ -3,14 +3,14 @@ import { View, TouchableOpacity, Image } from 'react-native';
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { connect } from 'react-redux';
 
-import { TrendingStackNavigator, DiscoverMoviesStack, DiscoverSeriesStack, DiscoverPeopleStack, LoginStack, ProfileStack ,WatchListStackNavigator} from './StackNavigator';
+import { TrendingStackNavigator, DiscoverMoviesStack, DiscoverSeriesStack, DiscoverPeopleStack, LoginStack, ProfileStack, WatchListStackNavigator } from './StackNavigator';
 import CustomSidebarMenu from './CostomSideBarMenu';
 import * as actions from '../actions';
 
 const Drawer = createDrawerNavigator();
 
 export const NavigationDrawerStructure = (props) => {
- 
+
 
   const toggleDrawer = () => {
     props.navigationProps.toggleDrawer();
@@ -19,7 +19,7 @@ export const NavigationDrawerStructure = (props) => {
   return (
     <View style={{ flexDirection: 'row' }}>
       <TouchableOpacity onPress={toggleDrawer}>
-      
+
         <Image
           source={{
             uri:
@@ -38,7 +38,7 @@ const DrawerNavigator = (props) => {
   props.retriveUserData();
   return (
     <Drawer.Navigator
-      drawerContentOptions={{
+      screenOptions={{
         activeTintColor: '#e91e63',
         itemStyle: { marginVertical: 5 }
       }}
